@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { Wine, Leaf } from "lucide-react";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
@@ -38,15 +39,33 @@ export function WineCard({
         onClick={onClick}
         className="card-surface rounded-xl overflow-hidden h-full flex flex-col w-full text-left active:scale-[0.98] transition-transform"
       >
-        {/* Gradient header */}
-        <div className="relative w-full shrink-0" style={{ paddingTop: "62%" }}>
+        {/* Bottle image / gradient header */}
+        <div className="relative w-full shrink-0" style={{ paddingTop: "90%" }}>
+          {/* Gradient background */}
           <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${grad.lFrom}, ${grad.lTo})` }} />
           <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${grad.dFrom}, ${grad.dTo})` }} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Wine size={32} className="text-gold opacity-30" />
-          </div>
+
+          {item.image_url ? (
+            /* Bottle image — object-contain keeps all bottles the same visual size */
+            <div className="absolute inset-0 p-2">
+              <div className="relative w-full h-full">
+                <Image
+                  src={item.image_url}
+                  alt={name}
+                  fill
+                  className="object-contain drop-shadow-lg"
+                  sizes="(max-width: 640px) 44vw, 200px"
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Wine size={32} className="text-gold opacity-30" />
+            </div>
+          )}
+
           {item.is_bio && (
-            <span className="absolute top-1.5 left-1.5 bg-pine text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">🌱</span>
+            <span className="absolute top-1.5 left-1.5 bg-pine text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">🌱</span>
           )}
           <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-black/10 to-transparent" />
         </div>
@@ -86,8 +105,16 @@ export function WineCard({
 
       <div className="p-4">
         <div className="flex gap-3">
-          <div className="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 flex items-center justify-center border border-gold/20">
-            <Wine size={18} className="text-gold" />
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 flex items-center justify-center border border-gold/20 overflow-hidden relative">
+            {item.image_url ? (
+              <div className="absolute inset-1">
+                <div className="relative w-full h-full">
+                  <Image src={item.image_url} alt={name} fill className="object-contain" sizes="56px" />
+                </div>
+              </div>
+            ) : (
+              <Wine size={18} className="text-gold" />
+            )}
           </div>
 
           <div className="flex-1 min-w-0">
