@@ -6,14 +6,16 @@ import { MenuCard } from "./MenuCard";
 import { WineCard } from "./WineCard";
 import { AllergenFilter } from "./AllergenFilter";
 import { MenuHero } from "./MenuHero";
+import { ItemDetailModal } from "./ItemDetailModal";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { Lock, X, LogIn } from "lucide-react";
 import type { Category, MenuItemWithAllergens, DailySpecial, Locale } from "@/types";
 
 const WINE_SLUGS = ["schaumwein", "weisswein", "rotwein"];
-
 const ADMIN_EMAIL = "admin@campedel.com";
+
+type SelectedItem = { item: MenuItemWithAllergens; categorySlug: string; specialPrice?: number | null } | null;
 
 export function MenuPageClient({
   categories,
@@ -32,6 +34,9 @@ export function MenuPageClient({
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const tabsRef = useRef<HTMLDivElement>(null);
   const today = new Date().toISOString().split("T")[0];
+
+  // Detail modal
+  const [selected, setSelected] = useState<SelectedItem>(null);
 
   // Admin modal
   const [adminOpen, setAdminOpen] = useState(false);
@@ -109,10 +114,9 @@ export function MenuPageClient({
   return (
     <div className="relative min-h-screen">
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
       <MenuHero locale={locale} onScrollDown={() => tabsRef.current?.scrollIntoView({ behavior: "smooth" })} />
 
-      {/* ── Daily specials banner ─────────────────────────────── */}
+      {/* Daily specials banner */}
       <AnimatePresence>
         {todaysSpecials.length > 0 && (
           <motion.div
@@ -139,7 +143,7 @@ export function MenuPageClient({
         )}
       </AnimatePresence>
 
-      {/* ── Sticky category tabs ──────────────────────────────── */}
+      {/* Sticky category tabs */}
       <div
         ref={tabsRef}
         className="sticky top-14 z-30 bg-bg-light/95 dark:bg-bg-dark/95 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
@@ -152,7 +156,7 @@ export function MenuPageClient({
         />
       </div>
 
-      {/* ── Menu sections ─────────────────────────────────────── */}
+      {/* Menu sections */}
       <div className="max-w-2xl mx-auto px-3 sm:px-5 pb-36">
         {activeCats.map((cat) => {
           const catItems = filteredItems(cat.slug);
@@ -179,31 +183,41 @@ export function MenuPageClient({
                 <p className="text-muted-light dark:text-muted-dark text-sm py-8 text-center italic">
                   Derzeit nicht verfügbar
                 </p>
-              ) : isWine ? (
-                <div className="grid gap-3">
-                  {catItems.map((item, i) => {
-                    const special = specialMap.get(item.id);
-                    return (
-                      <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: Math.min(i * 0.05, 0.3) }}>
-                        <WineCard item={item} locale={locale} />
-                      </motion.div>
-                    );
-                  })}
-                </div>
               ) : (
                 <div className="grid grid-cols-2 gap-2.5">
                   {catItems.map((item, i) => {
                     const special = specialMap.get(item.id);
                     return (
-                      <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25, delay: Math.min(i * 0.05, 0.3) }} className="flex">
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.25, delay: Math.min(i * 0.05, 0.3) }}
+                        className="flex"
+                      >
                         <div className="w-full">
-                          <MenuCard
-                            item={item}
-                            locale={locale}
-                            categorySlug={cat.slug}
-                            specialPrice={special?.special_price}
-                            compact
-                          />
+                          {isWine ? (
+                            <WineCard
+                              item={item}
+                              locale={locale}
+                              categorySlug={cat.slug}
+                              compact
+                              onClick={() => setSelected({ item, categorySlug: cat.slug, specialPrice: special?.special_price })}
+                            />
+                          ) : (
+                            <div
+                              className="cursor-pointer active:scale-[0.98] transition-transform"
+                              onClick={() => setSelected({ item, categorySlug: cat.slug, specialPrice: special?.special_price })}
+                            >
+                              <MenuCard
+                                item={item}
+                                locale={locale}
+                                categorySlug={cat.slug}
+                                specialPrice={special?.special_price}
+                                compact
+                              />
+                            </div>
+                          )}
                         </div>
                       </motion.div>
                     );
@@ -231,27 +245,29 @@ export function MenuPageClient({
           <p className="text-[11px] text-muted-light dark:text-muted-dark mb-1">
             © {new Date().getFullYear()} Campedèl-Hof · Seiser Alm
           </p>
-          <p className="text-[10px] text-zinc-300 dark:text-zinc-700 mb-3">
-            Traditionelle Südtiroler Küche
-          </p>
+          <p className="text-[10px] text-zinc-300 dark:text-zinc-700 mb-3">Traditionelle Südtiroler Küche</p>
           <button
             onClick={() => setAdminOpen(true)}
             className="text-[10px] text-zinc-300 dark:text-zinc-700 hover:text-zinc-400 dark:hover:text-zinc-500 transition-colors px-3 py-1"
-            aria-label="Admin"
           >
             Admin
           </button>
         </footer>
       </div>
 
-      {/* ── Allergen FAB ──────────────────────────────────────── */}
-      <AllergenFilter
-        active={excludedAllergens}
-        onChange={setExcludedAllergens}
+      {/* Allergen FAB */}
+      <AllergenFilter active={excludedAllergens} onChange={setExcludedAllergens} locale={locale} />
+
+      {/* Item detail modal */}
+      <ItemDetailModal
+        item={selected?.item ?? null}
         locale={locale}
+        categorySlug={selected?.categorySlug ?? ""}
+        specialPrice={selected?.specialPrice}
+        onClose={() => setSelected(null)}
       />
 
-      {/* ── Admin Password Modal ───────────────────────────────── */}
+      {/* Admin password modal */}
       <AnimatePresence>
         {adminOpen && (
           <motion.div
@@ -273,9 +289,7 @@ export function MenuPageClient({
                   <div className="w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center">
                     <Lock size={14} className="text-gold" />
                   </div>
-                  <h2 className="font-heading font-bold text-[17px] text-zinc-900 dark:text-zinc-100">
-                    Admin
-                  </h2>
+                  <h2 className="font-heading font-bold text-[17px] text-zinc-900 dark:text-zinc-100">Admin</h2>
                 </div>
                 <button
                   onClick={() => setAdminOpen(false)}
@@ -284,7 +298,6 @@ export function MenuPageClient({
                   <X size={16} />
                 </button>
               </div>
-
               <form onSubmit={handleAdminLogin} className="px-5 pb-5 space-y-3">
                 <input
                   ref={pwInputRef}
@@ -292,13 +305,11 @@ export function MenuPageClient({
                   value={adminPw}
                   onChange={(e) => { setAdminPw(e.target.value); setAdminError(""); }}
                   placeholder="Passwort"
-                  className="w-full px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition text-[16px]"
+                  className="w-full px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition text-base"
                   autoComplete="current-password"
                 />
                 {adminError && (
-                  <p className="text-[13px] text-red-500 bg-red-50 dark:bg-red-950/20 px-3 py-2 rounded-lg">
-                    {adminError}
-                  </p>
+                  <p className="text-[13px] text-red-500 bg-red-50 dark:bg-red-950/20 px-3 py-2 rounded-lg">{adminError}</p>
                 )}
                 <button
                   type="submit"
