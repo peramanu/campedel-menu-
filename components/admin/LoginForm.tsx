@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
+const ADMIN_EMAIL = "admin@campedel.com";
+
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
@@ -16,9 +17,12 @@ export function LoginForm() {
     e.preventDefault();
     setError("");
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email: ADMIN_EMAIL,
+      password,
+    });
     if (error) {
-      setError("Ungültige Anmeldedaten. Bitte erneut versuchen.");
+      setError("Falsches Passwort. Bitte erneut versuchen.");
     } else {
       router.push("/admin/dashboard");
       router.refresh();
@@ -30,19 +34,6 @@ export function LoginForm() {
     <form onSubmit={handleSubmit} className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card dark:shadow-card-dark p-6 space-y-4">
       <div>
         <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
-          E-Mail
-        </label>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full px-3 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition"
-          placeholder="admin@campedel.com"
-        />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
           Passwort
         </label>
         <div className="relative">
@@ -51,8 +42,10 @@ export function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-3 py-2.5 pr-10 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition"
+            autoFocus
+            className="w-full px-3 py-2.5 pr-10 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-gold/50 focus:border-gold transition text-base"
             placeholder="••••••••"
+            autoComplete="current-password"
           />
           <button
             type="button"
@@ -70,7 +63,7 @@ export function LoginForm() {
       )}
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !password}
         className="w-full flex items-center justify-center gap-2 bg-gold text-white font-semibold py-3 rounded-xl hover:bg-gold-dark transition-colors disabled:opacity-60"
       >
         <LogIn size={16} />

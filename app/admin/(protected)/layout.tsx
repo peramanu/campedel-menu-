@@ -19,7 +19,7 @@ export default async function ProtectedAdminLayout({
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <AdminNav />
-      <main className="max-w-6xl mx-auto px-4 py-6">{children}</main>
+      <main className="max-w-3xl mx-auto px-3 sm:px-5 py-5 sm:py-6">{children}</main>
     </div>
   );
 }

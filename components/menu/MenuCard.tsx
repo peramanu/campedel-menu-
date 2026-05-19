@@ -6,7 +6,6 @@ import { AllergenBadge } from "./AllergenBadge";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
 
-/* Light / dark gradient per category */
 type GradConfig = { lFrom: string; lTo: string; dFrom: string; dTo: string; icon: string };
 const CAT: Record<string, GradConfig> = {
   "kalte-vorspeisen": { lFrom:"#dcfce7", lTo:"#bbf7d0", dFrom:"#052e16", dTo:"#064e3b", icon:"🥗" },
@@ -23,16 +22,30 @@ const CAT: Record<string, GradConfig> = {
 };
 const FALLBACK: GradConfig = { lFrom:"#f1f5f9", lTo:"#e2e8f0", dFrom:"#1e293b", dTo:"#334155", icon:"🍽️" };
 
+function GradientBg({ cfg }: { cfg: GradConfig }) {
+  return (
+    <>
+      <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${cfg.lFrom}, ${cfg.lTo})` }} />
+      <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }} />
+      <div className="absolute inset-0 flex items-center justify-end pr-4">
+        <span className="text-[56px] leading-none opacity-[0.12] select-none pointer-events-none">{cfg.icon}</span>
+      </div>
+    </>
+  );
+}
+
 export function MenuCard({
   item,
   locale,
   categorySlug,
   specialPrice,
+  compact = false,
 }: {
   item: MenuItemWithAllergens;
   locale: Locale;
   categorySlug: string;
   specialPrice?: number | null;
+  compact?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const name = getLocalizedField(item, "name", locale);
@@ -40,10 +53,86 @@ export function MenuCard({
   const cfg = CAT[categorySlug] ?? FALLBACK;
   const displayPrice = specialPrice ?? item.price;
 
+  if (compact) {
+    return (
+      <div className="card-surface rounded-xl overflow-hidden h-full flex flex-col">
+        {/* Image / gradient */}
+        <div className="relative w-full flex-shrink-0" style={{ paddingTop: "68%" }}>
+          {item.image_url ? (
+            <Image src={item.image_url} alt={name} fill className="object-cover" sizes="200px" />
+          ) : (
+            <GradientBg cfg={cfg} />
+          )}
+          {/* Badges */}
+          <div className="absolute top-1.5 left-1.5 flex flex-col gap-1">
+            {item.is_daily_special && (
+              <span className="bg-gold text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm uppercase">✨</span>
+            )}
+            {item.is_bio && (
+              <span className="bg-pine text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">🌱</span>
+            )}
+          </div>
+          <div className="absolute top-1.5 right-1.5 flex gap-0.5">
+            {item.is_vegan && (
+              <span className="bg-pine/90 text-white p-1 rounded-full shadow-sm">
+                <Sprout size={9} strokeWidth={2.5} />
+              </span>
+            )}
+            {item.is_vegetarian && !item.is_vegan && (
+              <span className="bg-emerald-600/90 text-white p-1 rounded-full shadow-sm">
+                <Leaf size={9} strokeWidth={2.5} />
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="px-2.5 pt-2 pb-2.5 flex flex-col flex-1">
+          <div className="flex items-start justify-between gap-1 mb-1">
+            <h3 className="font-heading font-bold text-[13px] leading-snug text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 line-clamp-2">
+              {name}
+            </h3>
+          </div>
+          {desc && (
+            <p className="text-[11px] italic text-muted-light dark:text-muted-dark leading-relaxed line-clamp-2 mb-1">
+              {desc}
+            </p>
+          )}
+          <div className="mt-auto pt-1 flex items-end justify-between gap-1">
+            <div className="flex flex-wrap gap-0.5">
+              {item.allergens.slice(0, 4).map((a) => (
+                <span
+                  key={a.id}
+                  title={a.name_de}
+                  className="text-[10px] font-bold text-muted-light dark:text-muted-dark bg-zinc-100 dark:bg-zinc-800 rounded px-1"
+                >
+                  {a.code}
+                </span>
+              ))}
+              {item.allergens.length > 4 && (
+                <span className="text-[10px] text-muted-light dark:text-muted-dark">+{item.allergens.length - 4}</span>
+              )}
+            </div>
+            <div className="shrink-0 text-right">
+              {specialPrice != null && item.price != null && (
+                <p className="text-[10px] line-through text-muted-light dark:text-muted-dark leading-none">
+                  {formatPrice(item.price)}
+                </p>
+              )}
+              {displayPrice != null && (
+                <p className="price-text text-[14px] leading-none">{formatPrice(displayPrice)}</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card-surface rounded-2xl overflow-hidden">
-      {/* ── Image / gradient ──────────────────────────── */}
-      <div className="relative w-full" style={{ paddingTop: "42%" /* ~21:9 slim */ }}>
+      {/* Image / gradient */}
+      <div className="relative w-full" style={{ paddingTop: "42%" }}>
         {item.image_url ? (
           <Image
             src={item.image_url}
@@ -53,27 +142,9 @@ export function MenuCard({
             sizes="(max-width: 672px) 100vw, 672px"
           />
         ) : (
-          <>
-            {/* light gradient */}
-            <div
-              className="absolute inset-0 dark:hidden"
-              style={{ background: `linear-gradient(135deg, ${cfg.lFrom}, ${cfg.lTo})` }}
-            />
-            {/* dark gradient */}
-            <div
-              className="absolute inset-0 hidden dark:block"
-              style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }}
-            />
-            {/* big emoji watermark */}
-            <div className="absolute inset-0 flex items-center justify-end pr-6">
-              <span className="text-[64px] leading-none opacity-[0.12] select-none pointer-events-none">
-                {cfg.icon}
-              </span>
-            </div>
-          </>
+          <GradientBg cfg={cfg} />
         )}
 
-        {/* Badges: top-left */}
         <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           {item.is_daily_special && (
             <span className="bg-gold text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-md tracking-wide uppercase">
@@ -87,7 +158,6 @@ export function MenuCard({
           )}
         </div>
 
-        {/* Diet badges: top-right */}
         <div className="absolute top-2.5 right-2.5 flex gap-1">
           {item.is_vegan && (
             <span className="bg-pine/90 backdrop-blur-sm text-white p-1.5 rounded-full shadow-md" title="Vegan">
@@ -102,9 +172,8 @@ export function MenuCard({
         </div>
       </div>
 
-      {/* ── Text content ──────────────────────────────── */}
+      {/* Text content */}
       <div className="px-4 pt-3 pb-3.5">
-        {/* Name + price */}
         <div className="flex items-start justify-between gap-2 mb-1.5">
           <h3 className="font-heading font-bold text-[16px] sm:text-[17px] leading-snug text-zinc-900 dark:text-zinc-100 flex-1 min-w-0">
             {name}
@@ -123,7 +192,6 @@ export function MenuCard({
           </div>
         </div>
 
-        {/* Description */}
         {desc && (
           <div className="mb-2.5">
             <p
@@ -144,7 +212,6 @@ export function MenuCard({
           </div>
         )}
 
-        {/* Allergen badges */}
         {item.allergens.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-0.5">
             {item.allergens.map((a) => (

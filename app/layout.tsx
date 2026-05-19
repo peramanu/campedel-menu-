@@ -49,6 +49,12 @@ export default async function RootLayout({
       className={`${playfair.variable} ${inter.variable} h-full`}
     >
       <body className="min-h-full bg-bg-light dark:bg-bg-dark text-zinc-900 dark:text-zinc-100 font-body antialiased">
+        {/* Blocking script: prevents dark-mode flash before hydration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+          }}
+        />
         <ThemeProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
             {children}
