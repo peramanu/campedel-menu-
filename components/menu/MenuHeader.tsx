@@ -3,56 +3,50 @@ import Image from "next/image";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { LanguageSwitcher } from "./LanguageSwitcher";
-import { useTranslations } from "next-intl";
 
 export function MenuHeader({ locale }: { locale: string }) {
   const { theme, setTheme } = useTheme();
-  const t = useTranslations("hero");
-
-  const themeIcons = [
-    { value: "light" as const, icon: Sun },
-    { value: "dark" as const, icon: Moon },
-    { value: "system" as const, icon: Monitor },
-  ];
 
   return (
-    <header className="bg-bg-light dark:bg-bg-dark border-b border-zinc-200/60 dark:border-zinc-800/60 sticky top-0 z-40 pt-[env(safe-area-inset-top)]">
-      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+    <header className="sticky top-0 z-40 pt-safe bg-bg-light/80 dark:bg-bg-dark/80 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50">
+      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-3">
+
+        {/* Logo + wordmark */}
+        <div className="flex items-center gap-2.5">
           <Image
             src="/logo/logo.png"
-            alt="Campedèl Logo"
-            width={40}
-            height={40}
-            className="rounded-lg object-contain"
+            alt="Campedèl"
+            width={36}
+            height={36}
+            className="logo-img object-contain flex-shrink-0"
             priority
           />
-          <div>
-            <p className="font-heading font-bold text-base leading-tight text-zinc-900 dark:text-zinc-100">
-              Campedèl
-            </p>
-            <p className="text-xs text-muted-light dark:text-muted-dark leading-tight">
-              {t("tagline")}
-            </p>
-          </div>
+          <span className="font-heading font-bold text-[15px] tracking-wide text-zinc-900 dark:text-zinc-100 leading-none select-none">
+            Campedèl
+          </span>
         </div>
 
+        {/* Controls */}
         <div className="flex items-center gap-2">
-          <div className="flex bg-zinc-100 dark:bg-zinc-800 rounded-full p-1 gap-0.5">
-            {themeIcons.map(({ value, icon: Icon }) => (
-              <button
-                key={value}
-                onClick={() => setTheme(value)}
-                className={`p-1.5 rounded-full transition-all ${
-                  theme === value
-                    ? "bg-gold text-white"
-                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
-                }`}
-                aria-label={`Theme: ${value}`}
-              >
-                <Icon size={13} />
-              </button>
-            ))}
+          {/* Theme picker */}
+          <div className="flex items-center bg-zinc-100/80 dark:bg-zinc-800/80 rounded-full p-0.5 gap-0.5">
+            {(["light", "dark", "system"] as const).map((v) => {
+              const Icon = v === "light" ? Sun : v === "dark" ? Moon : Monitor;
+              return (
+                <button
+                  key={v}
+                  onClick={() => setTheme(v)}
+                  aria-label={v}
+                  className={`p-1.5 rounded-full transition-all duration-200 ${
+                    theme === v
+                      ? "bg-gold text-white shadow-sm"
+                      : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                  }`}
+                >
+                  <Icon size={12} />
+                </button>
+              );
+            })}
           </div>
           <LanguageSwitcher current={locale} />
         </div>

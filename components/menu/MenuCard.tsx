@@ -1,20 +1,36 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { Leaf, Sprout, Star, Award } from "lucide-react";
+import { Leaf, Sprout } from "lucide-react";
 import { AllergenBadge } from "./AllergenBadge";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
-import type { MenuItemWithAllergens } from "@/types";
-import type { Locale } from "@/types";
+import type { MenuItemWithAllergens, Locale } from "@/types";
 
-const CATEGORY_GRADIENTS: Record<string, string> = {
-  "kalte-vorspeisen": "from-emerald-100 to-teal-100 dark:from-emerald-900/20 dark:to-teal-900/20",
-  "suppen": "from-amber-100 to-orange-100 dark:from-amber-900/20 dark:to-orange-900/20",
-  "warme-vorspeisen": "from-rose-100 to-pink-100 dark:from-rose-900/20 dark:to-pink-900/20",
-  "hauptspeisen": "from-stone-100 to-zinc-100 dark:from-stone-900/20 dark:to-zinc-900/20",
-  "kinder": "from-yellow-100 to-lime-100 dark:from-yellow-900/20 dark:to-lime-900/20",
-  "dessert": "from-purple-100 to-fuchsia-100 dark:from-purple-900/20 dark:to-fuchsia-900/20",
+const CAT_COLORS: Record<string, { from: string; to: string; icon: string }> = {
+  "kalte-vorspeisen": { from: "#d1fae5", to: "#a7f3d0", icon: "🥗" },
+  "suppen":           { from: "#fef3c7", to: "#fde68a", icon: "🍲" },
+  "warme-vorspeisen": { from: "#fce7f3", to: "#fbcfe8", icon: "🍝" },
+  "hauptspeisen":     { from: "#f1f5f9", to: "#e2e8f0", icon: "🍽️" },
+  "kinder":           { from: "#fef9c3", to: "#fef08a", icon: "👶" },
+  "dessert":          { from: "#f3e8ff", to: "#e9d5ff", icon: "🍮" },
+  "warme-getraenke":  { from: "#fff7ed", to: "#fed7aa", icon: "☕" },
+  "getraenke":        { from: "#eff6ff", to: "#bfdbfe", icon: "🥤" },
+  "bier":             { from: "#fefce8", to: "#fef08a", icon: "🍺" },
+  "aperitif":         { from: "#fdf4ff", to: "#f5d0fe", icon: "🍸" },
+  "digestif":         { from: "#fdf2f8", to: "#fbcfe8", icon: "🥃" },
+};
+const CAT_DARK_COLORS: Record<string, { from: string; to: string }> = {
+  "kalte-vorspeisen": { from: "#052e16", to: "#064e3b" },
+  "suppen":           { from: "#431407", to: "#78350f" },
+  "warme-vorspeisen": { from: "#4a044e", to: "#831843" },
+  "hauptspeisen":     { from: "#1e293b", to: "#334155" },
+  "kinder":           { from: "#422006", to: "#713f12" },
+  "dessert":          { from: "#3b0764", to: "#581c87" },
+  "warme-getraenke":  { from: "#431407", to: "#7c2d12" },
+  "getraenke":        { from: "#1e3a5f", to: "#1e40af" },
+  "bier":             { from: "#422006", to: "#78350f" },
+  "aperitif":         { from: "#4a044e", to: "#6b21a8" },
+  "digestif":         { from: "#4a044e", to: "#831843" },
 };
 
 export function MenuCard({
@@ -31,18 +47,14 @@ export function MenuCard({
   const [expanded, setExpanded] = useState(false);
   const name = getLocalizedField(item, "name", locale);
   const desc = getLocalizedField(item, "description", locale);
-  const gradient = CATEGORY_GRADIENTS[categorySlug] || CATEGORY_GRADIENTS["hauptspeisen"];
+  const catLight = CAT_COLORS[categorySlug] ?? CAT_COLORS["hauptspeisen"];
+  const catDark  = CAT_DARK_COLORS[categorySlug] ?? CAT_DARK_COLORS["hauptspeisen"];
   const displayPrice = specialPrice ?? item.price;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25 }}
-      className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card dark:shadow-card-dark overflow-hidden"
-    >
-      {/* Image / Gradient */}
-      <div className="relative aspect-[16/9] overflow-hidden">
+    <div className="card-surface rounded-2xl overflow-hidden">
+      {/* Image / gradient top */}
+      <div className="relative" style={{ aspectRatio: "16/8" }}>
         {item.image_url ? (
           <Image
             src={item.image_url}
@@ -52,64 +64,85 @@ export function MenuCard({
             sizes="(max-width: 640px) 100vw, 640px"
           />
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <span className="text-4xl opacity-40">{getCategoryEmoji(categorySlug)}</span>
-          </div>
+          <>
+            <div
+              className="absolute inset-0 block dark:hidden"
+              style={{
+                background: `linear-gradient(135deg, ${catLight.from}, ${catLight.to})`,
+              }}
+            />
+            <div
+              className="absolute inset-0 hidden dark:block"
+              style={{
+                background: `linear-gradient(135deg, ${catDark.from}, ${catDark.to})`,
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <span className="text-5xl opacity-20 select-none">{catLight.icon}</span>
+            </div>
+          </>
         )}
-        {/* Badges overlay */}
-        <div className="absolute top-2 left-2 flex gap-1.5">
+
+        {/* Status ribbons */}
+        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
           {item.is_daily_special && (
-            <span className="bg-gold text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
-              ✨ Heute
+            <span className="bg-gold text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-md tracking-wide">
+              ✨ Tagesangebot
             </span>
           )}
           {item.is_bio && (
-            <span className="bg-pine text-white text-xs font-bold px-2 py-0.5 rounded-full shadow">
+            <span className="bg-pine text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-md">
               🌱 BIO
             </span>
           )}
         </div>
-        <div className="absolute top-2 right-2 flex gap-1">
+
+        {/* Diet icons */}
+        <div className="absolute top-2.5 right-2.5 flex gap-1">
           {item.is_vegan && (
-            <span className="bg-pine/90 text-white p-1 rounded-full shadow" title="Vegan">
-              <Sprout size={12} />
+            <span className="bg-pine/90 text-white p-1.5 rounded-full shadow-md" title="Vegan">
+              <Sprout size={11} />
             </span>
           )}
           {item.is_vegetarian && !item.is_vegan && (
-            <span className="bg-emerald-600/90 text-white p-1 rounded-full shadow" title="Vegetarisch">
-              <Leaf size={12} />
+            <span className="bg-emerald-600/90 text-white p-1.5 rounded-full shadow-md" title="Vegetarisch">
+              <Leaf size={11} />
             </span>
           )}
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3 mb-1">
-          <h3 className="font-heading font-bold text-[18px] leading-snug text-zinc-900 dark:text-zinc-100 flex-1">
+      <div className="px-4 pt-3.5 pb-4">
+        {/* Name + price row */}
+        <div className="flex items-start justify-between gap-2 mb-1.5">
+          <h3 className="font-heading font-bold text-[17px] leading-snug text-zinc-900 dark:text-zinc-100 flex-1">
             {name}
           </h3>
-          <div className="text-right shrink-0">
-            {specialPrice != null && (
-              <p className="text-xs line-through text-muted-light dark:text-muted-dark">
-                {formatPrice(item.price!)}
+          <div className="shrink-0 text-right">
+            {specialPrice != null && item.price != null && (
+              <p className="text-xs line-through text-muted-light dark:text-muted-dark leading-none mb-0.5">
+                {formatPrice(item.price)}
               </p>
             )}
-            <p className="font-bold text-gold text-lg">
-              {displayPrice != null ? formatPrice(displayPrice) : ""}
-            </p>
+            {displayPrice != null && (
+              <p className="price-text text-[17px] leading-none">
+                {formatPrice(displayPrice)}
+              </p>
+            )}
           </div>
         </div>
 
+        {/* Description */}
         {desc && (
           <div className="mb-3">
-            <p className={`text-sm italic text-muted-light dark:text-muted-dark leading-relaxed ${!expanded ? "line-clamp-2" : ""}`}>
+            <p className={`text-[13px] italic text-muted-light dark:text-muted-dark leading-relaxed ${!expanded ? "line-clamp-2" : ""}`}>
               {desc}
             </p>
-            {desc.length > 80 && (
+            {desc.length > 90 && (
               <button
                 onClick={() => setExpanded((e) => !e)}
-                className="text-xs text-gold mt-0.5 font-medium"
+                className="text-[12px] text-gold font-semibold mt-0.5 hover:text-gold-dark transition-colors"
               >
                 {expanded ? "Weniger" : "Mehr lesen"}
               </button>
@@ -117,25 +150,15 @@ export function MenuCard({
           </div>
         )}
 
+        {/* Allergens */}
         {item.allergens.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="flex flex-wrap gap-1">
             {item.allergens.map((a) => (
               <AllergenBadge key={a.id} allergen={a} locale={locale} />
             ))}
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
-}
-
-function getCategoryEmoji(slug: string): string {
-  const map: Record<string, string> = {
-    "kalte-vorspeisen": "🥗", "suppen": "🍲", "warme-vorspeisen": "🍝",
-    "hauptspeisen": "🍽️", "kinder": "👶", "dessert": "🍮",
-    "schaumwein": "🥂", "weisswein": "🍾", "rotwein": "🍷",
-    "warme-getraenke": "☕", "getraenke": "🥤", "bier": "🍺",
-    "aperitif": "🍸", "digestif": "🥃",
-  };
-  return map[slug] || "🍽️";
 }

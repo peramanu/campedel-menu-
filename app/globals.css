@@ -2,65 +2,93 @@
 
 @theme inline {
   --font-heading: var(--font-playfair);
-  --font-body: var(--font-inter);
-
-  --color-gold: #C9A96E;
-  --color-gold-light: #DFC08A;
-  --color-gold-dark: #A8854A;
-  --color-pine: #2D5016;
-  --color-pine-light: #3D6B1F;
-  --color-pine-dark: #1E3710;
-  --color-bg-light: #FAFAF8;
-  --color-bg-dark: #1A1A18;
+  --font-body:    var(--font-inter);
+  --color-gold:          #C9A96E;
+  --color-gold-light:    #DFC08A;
+  --color-gold-dark:     #A8854A;
+  --color-pine:          #2D5016;
+  --color-pine-light:    #3D6B1F;
+  --color-pine-dark:     #1E3710;
+  --color-bg-light:      #FAFAF8;
+  --color-bg-dark:       #1A1A18;
   --color-surface-light: #FFFFFF;
-  --color-surface-dark: #242420;
-  --color-muted-light: #6B6B5E;
-  --color-muted-dark: #9B9B8E;
+  --color-surface-dark:  #242420;
+  --color-muted-light:   #6B6B5E;
+  --color-muted-dark:    #9B9B8E;
 }
 
-/* Safe area insets for iPhone notch/Dynamic Island */
-:root {
-  --sat: env(safe-area-inset-top);
-  --sab: env(safe-area-inset-bottom);
-  --sal: env(safe-area-inset-left);
-  --sar: env(safe-area-inset-right);
+html { scroll-behavior: smooth; }
+input, textarea, select { font-size: 16px; }
+
+/* ── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #C9A96E35; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #C9A96E65; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Logo: white-bg PNG → dark-mode inverted ───────────────── */
+.logo-img {
+  mix-blend-mode: multiply;   /* white bg disappears on light surfaces */
+  transition: filter 0.25s;
+}
+.dark .logo-img {
+  filter: invert(1);
+  mix-blend-mode: screen;     /* black bg disappears on dark surfaces  */
 }
 
-html {
-  scroll-behavior: smooth;
+/* ── Section scroll target ─────────────────────────────────── */
+.menu-section { scroll-margin-top: 116px; }
+
+/* ── Hero gradient ─────────────────────────────────────────── */
+.hero-gradient {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% -10%,
+      rgba(201,169,110,0.12) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 80% 120%,
+      rgba(45,80,22,0.06) 0%, transparent 60%);
+}
+.dark .hero-gradient {
+  background:
+    radial-gradient(ellipse 100% 80% at 50% -10%,
+      rgba(201,169,110,0.09) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 80% 120%,
+      rgba(45,80,22,0.05) 0%, transparent 60%);
 }
 
-/* Prevent zoom on input focus (iOS) */
-input, textarea, select {
-  font-size: 16px;
+/* ── Subtle diamond tile (from logo motif) ─────────────────── */
+.diamond-tile {
+  background-image: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 3 L45 24 L24 45 L3 24 Z' fill='none' stroke='%23C9A96E' stroke-width='0.6' stroke-opacity='0.18'/%3E%3C/svg%3E");
+  background-size: 48px 48px;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ── Card ──────────────────────────────────────────────────── */
+.card-surface {
+  background: var(--color-surface-light);
+  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.06);
+  transition: box-shadow 0.2s, transform 0.2s;
 }
-::-webkit-scrollbar-track {
-  background: transparent;
+.dark .card-surface {
+  background: var(--color-surface-dark);
+  box-shadow: 0 1px 3px rgba(0,0,0,.2), 0 4px 20px rgba(0,0,0,.25);
 }
-::-webkit-scrollbar-thumb {
-  background: #C9A96E40;
-  border-radius: 9999px;
+.card-surface:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.10);
+  transform: translateY(-1px);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #C9A96E80;
-}
-
-/* Hide scrollbar on horizontal scroll areas */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.dark .card-surface:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,.30), 0 8px 28px rgba(0,0,0,.40);
+  transform: translateY(-1px);
 }
 
-/* Smooth section snapping */
-.menu-section {
-  scroll-margin-top: 120px;
+/* ── Bottom nav safe area ──────────────────────────────────── */
+.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 4px); }
+.pt-safe { padding-top: env(safe-area-inset-top); }
+
+/* ── Gold price text ───────────────────────────────────────── */
+.price-text {
+  color: #A8854A;
+  font-weight: 700;
 }
+.dark .price-text { color: #DFC08A; }
