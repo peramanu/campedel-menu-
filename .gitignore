@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Claude Code local settings
 .claude/
+
+# OpenNext / Cloudflare Workers build output
+.open-next/
