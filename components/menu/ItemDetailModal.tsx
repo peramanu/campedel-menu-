@@ -94,17 +94,28 @@ export function ItemDetailModal({
             </div>
 
             {/* Hero image / gradient */}
-            <div className="relative w-full shrink-0" style={{ paddingTop: isWine ? "40%" : "52%" }}>
+            <div className="relative w-full shrink-0" style={{ paddingTop: isWine ? "65%" : "52%" }}>
+              {/* Gradient always visible as background */}
+              <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${cfg.lFrom}, ${cfg.lTo})` }} />
+              <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }} />
+
               {item.image_url ? (
-                <Image src={item.image_url} alt={name} fill className="object-cover" sizes="500px" />
-              ) : (
-                <>
-                  <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${cfg.lFrom}, ${cfg.lTo})` }} />
-                  <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-[80px] leading-none opacity-[0.15] select-none">{cfg.icon}</span>
+                /* object-contain so bottle is never cropped; gradient shows around it */
+                <div className="absolute inset-0 p-4">
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={item.image_url}
+                      alt={name}
+                      fill
+                      className="object-contain drop-shadow-2xl"
+                      sizes="500px"
+                    />
                   </div>
-                </>
+                </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[80px] leading-none opacity-[0.15] select-none">{cfg.icon}</span>
+                </div>
               )}
 
               {/* Close button */}
