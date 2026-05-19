@@ -17,78 +17,101 @@
   --color-muted-dark:    #9B9B8E;
 }
 
-html { scroll-behavior: smooth; }
-input, textarea, select { font-size: 16px; }
+/* ── Reset / base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body { -webkit-font-smoothing: antialiased; }
 
-/* ── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 5px; height: 5px; }
+/* Prevent iOS input zoom (font-size must stay ≥16px on inputs) */
+input, textarea, select { font-size: max(16px, 1rem); }
+
+/* ── Scrollbars ────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #C9A96E35; border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: #C9A96E65; }
+::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.3); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,169,110,0.55); }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── Logo: white-bg PNG → dark-mode inverted ───────────────── */
+/* ── Logo: white-bg PNG → invisible bg in both modes ────────
+   Light: multiply makes white disappear against #FAFAF8
+   Dark:  invert + screen makes black disappear against #1A1A18  */
 .logo-img {
-  mix-blend-mode: multiply;   /* white bg disappears on light surfaces */
-  transition: filter 0.25s;
+  mix-blend-mode: multiply;
+  transition: filter 0.2s ease;
 }
 .dark .logo-img {
   filter: invert(1);
-  mix-blend-mode: screen;     /* black bg disappears on dark surfaces  */
+  mix-blend-mode: screen;
 }
 
-/* ── Section scroll target ─────────────────────────────────── */
-.menu-section { scroll-margin-top: 116px; }
+/* ── Safe-area utilities ───────────────────────────────────── */
+.pt-safe  { padding-top:    env(safe-area-inset-top); }
+.pb-safe  { padding-bottom: env(safe-area-inset-bottom); }
 
-/* ── Hero gradient ─────────────────────────────────────────── */
+/* ── Section scroll target (header 56px + tabs 48px + gap 8) */
+.menu-section { scroll-margin-top: 118px; }
+
+/* ── Hero gradient (warm gold glow from top) ───────────────── */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 100% 80% at 50% -10%,
-      rgba(201,169,110,0.12) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 40% at 80% 120%,
-      rgba(45,80,22,0.06) 0%, transparent 60%);
+    radial-gradient(ellipse 110% 70% at 50% -5%,
+      rgba(201,169,110,0.13) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 110%,
+      rgba(45,80,22,0.06) 0%, transparent 55%);
 }
 .dark .hero-gradient {
   background:
-    radial-gradient(ellipse 100% 80% at 50% -10%,
-      rgba(201,169,110,0.09) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 40% at 80% 120%,
-      rgba(45,80,22,0.05) 0%, transparent 60%);
+    radial-gradient(ellipse 110% 70% at 50% -5%,
+      rgba(201,169,110,0.09) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 90% 110%,
+      rgba(45,80,22,0.05) 0%, transparent 55%);
 }
 
-/* ── Subtle diamond tile (from logo motif) ─────────────────── */
+/* ── Diamond tile pattern (from the logo's geometric motif) ── */
 .diamond-tile {
-  background-image: url("data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 3 L45 24 L24 45 L3 24 Z' fill='none' stroke='%23C9A96E' stroke-width='0.6' stroke-opacity='0.18'/%3E%3C/svg%3E");
+  background-image:
+    url("data:image/svg+xml,%3Csvg width='48' height='48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 4 L44 24 L24 44 L4 24 Z' fill='none' stroke='%23C9A96E' stroke-width='0.7' stroke-opacity='0.15'/%3E%3C/svg%3E");
   background-size: 48px 48px;
 }
 
-/* ── Card ──────────────────────────────────────────────────── */
+/* ── Card surface ──────────────────────────────────────────── */
 .card-surface {
-  background: var(--color-surface-light);
-  box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 20px rgba(0,0,0,.06);
-  transition: box-shadow 0.2s, transform 0.2s;
+  background: #FFFFFF;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 3px 16px rgba(0,0,0,0.07);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .dark .card-surface {
-  background: var(--color-surface-dark);
-  box-shadow: 0 1px 3px rgba(0,0,0,.2), 0 4px 20px rgba(0,0,0,.25);
+  background: #242420;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25), 0 3px 16px rgba(0,0,0,0.3);
 }
-.card-surface:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,.07), 0 8px 28px rgba(0,0,0,.10);
-  transform: translateY(-1px);
-}
-.dark .card-surface:hover {
-  box-shadow: 0 2px 8px rgba(0,0,0,.30), 0 8px 28px rgba(0,0,0,.40);
-  transform: translateY(-1px);
+/* Hover lift — only for non-touch devices */
+@media (hover: hover) {
+  .card-surface:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.11);
+    transform: translateY(-1px);
+  }
+  .dark .card-surface:hover {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
 }
 
-/* ── Bottom nav safe area ──────────────────────────────────── */
-.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 4px); }
-.pt-safe { padding-top: env(safe-area-inset-top); }
-
-/* ── Gold price text ───────────────────────────────────────── */
-.price-text {
-  color: #A8854A;
-  font-weight: 700;
-}
+/* ── Gold price colour ─────────────────────────────────────── */
+.price-text { color: #A8854A; font-weight: 700; }
 .dark .price-text { color: #DFC08A; }
+
+/* ── Touch-friendly active states ─────────────────────────── */
+@media (max-width: 640px) {
+  button { -webkit-tap-highlight-color: transparent; }
+}
+
+/* ── Extra small breakpoint helper ────────────────────────── */
+@media (min-width: 400px) {
+  .xs\:block  { display: block; }
+  .xs\:hidden { display: none;  }
+}

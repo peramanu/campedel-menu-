@@ -3,90 +3,101 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-export function MenuHero({ onScrollDown }: { onScrollDown: () => void }) {
+export function MenuHero({
+  locale,
+  onScrollDown,
+}: {
+  locale: string;
+  onScrollDown: () => void;
+}) {
   const t = useTranslations("hero");
 
   return (
-    <motion.div
+    <motion.section
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-      className="hero-gradient diamond-tile relative overflow-hidden"
+      transition={{ duration: 0.5 }}
+      className="hero-gradient diamond-tile relative overflow-hidden select-none"
     >
-      <div className="max-w-2xl mx-auto px-6 pt-14 pb-12 flex flex-col items-center text-center">
+      <div className="max-w-lg mx-auto px-5 pt-10 pb-9 flex flex-col items-center text-center">
 
-        {/* Logo mark — large */}
+        {/* Logo */}
         <motion.div
-          initial={{ scale: 0.85, opacity: 0 }}
+          initial={{ scale: 0.88, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="mb-6"
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-5"
         >
           <Image
             src="/logo/logo.png"
             alt="Campedèl"
-            width={120}
-            height={120}
+            width={96}
+            height={96}
             className="logo-img object-contain"
             priority
           />
         </motion.div>
 
-        {/* Wordmark + tagline */}
-        <motion.div
-          initial={{ y: 12, opacity: 0 }}
+        {/* Name */}
+        <motion.h1
+          initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.45, delay: 0.25 }}
-          className="mb-8"
+          transition={{ duration: 0.4, delay: 0.15 }}
+          className="font-heading font-bold text-[28px] sm:text-[34px] leading-none tracking-tight text-zinc-900 dark:text-zinc-50 mb-1.5"
         >
-          <h1 className="font-heading font-bold text-[32px] leading-none tracking-tight text-zinc-900 dark:text-zinc-50 mb-2">
-            Campedèl
-          </h1>
-          <p className="text-sm font-medium tracking-[0.18em] uppercase text-gold">
-            {t("tagline")}
-          </p>
-        </motion.div>
+          Campedèl
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35, delay: 0.25 }}
+          className="text-[11px] font-semibold tracking-[0.2em] uppercase text-gold mb-6"
+        >
+          {t("tagline")}
+        </motion.p>
 
         {/* Divider */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="w-12 h-px bg-gradient-to-r from-transparent via-gold to-transparent mb-8"
+          transition={{ duration: 0.35, delay: 0.35 }}
+          className="w-10 h-px bg-gradient-to-r from-transparent via-gold to-transparent mb-6"
         />
 
-        {/* Subtitle */}
-        <motion.p
+        {/* Language switcher — prominent here */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.42 }}
+          className="mb-7"
+        >
+          <LanguageSwitcher current={locale} />
+        </motion.div>
+
+        {/* Scroll CTA */}
+        <motion.button
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          className="text-sm text-muted-light dark:text-muted-dark max-w-xs leading-relaxed mb-10"
-        >
-          {t("subtitle")}
-        </motion.p>
-
-        {/* Scroll down CTA */}
-        <motion.button
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.6 }}
+          transition={{ duration: 0.3, delay: 0.55 }}
           onClick={onScrollDown}
-          className="flex flex-col items-center gap-1.5 text-muted-light dark:text-muted-dark hover:text-gold transition-colors group"
-          aria-label="Zur Speisekarte"
+          className="flex flex-col items-center gap-1 text-muted-light dark:text-muted-dark hover:text-gold dark:hover:text-gold transition-colors group min-h-[44px] justify-center"
+          aria-label="Zur Speisekarte scrollen"
         >
-          <span className="text-xs tracking-widest uppercase">Speisekarte</span>
+          <span className="text-[10px] tracking-[0.2em] uppercase font-medium">Speisekarte</span>
           <motion.div
             animate={{ y: [0, 4, 0] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           >
-            <ChevronDown size={18} className="group-hover:text-gold" />
+            <ChevronDown size={16} />
           </motion.div>
         </motion.button>
       </div>
 
       {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-bg-light dark:from-bg-dark to-transparent pointer-events-none" />
-    </motion.div>
+      <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-bg-light dark:from-bg-dark to-transparent pointer-events-none" />
+    </motion.section>
   );
 }
