@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-heading: var(--font-playfair);
+  --font-body: var(--font-inter);
+
+  --color-gold: #C9A96E;
+  --color-gold-light: #DFC08A;
+  --color-gold-dark: #A8854A;
+  --color-pine: #2D5016;
+  --color-pine-light: #3D6B1F;
+  --color-pine-dark: #1E3710;
+  --color-bg-light: #FAFAF8;
+  --color-bg-dark: #1A1A18;
+  --color-surface-light: #FFFFFF;
+  --color-surface-dark: #242420;
+  --color-muted-light: #6B6B5E;
+  --color-muted-dark: #9B9B8E;
+}
+
+/* Safe area insets for iPhone notch/Dynamic Island */
+:root {
+  --sat: env(safe-area-inset-top);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+  --sar: env(safe-area-inset-right);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent zoom on input focus (iOS) */
+input, textarea, select {
+  font-size: 16px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #C9A96E40;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C9A96E80;
+}
+
+/* Hide scrollbar on horizontal scroll areas */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Smooth section snapping */
+.menu-section {
+  scroll-margin-top: 120px;
+}
