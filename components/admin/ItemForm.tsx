@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { AllergenSelector } from "./AllergenSelector";
-import { X, Save, Upload } from "lucide-react";
+import { X, Save, ImagePlus, Trash2, Loader2 } from "lucide-react";
 import type { Category, MenuItem } from "@/types";
 
 type Tab = "de" | "it" | "en";
@@ -23,7 +24,10 @@ export function ItemForm({
 }) {
   const [tab, setTab] = useState<Tab>("de");
   const [loading, setLoading] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadState, setUploadState] = useState<"idle" | "uploading" | "error">("idle");
+  const [uploadError, setUploadError] = useState("");
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({
     category_id: item?.category_id ?? categories[0]?.id ?? "",
@@ -62,18 +66,38 @@ export function ItemForm({
     setForm((f) => ({ ...f, [key]: val }));
   }
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadingImage(true);
-    const ext = file.name.split(".").pop();
-    const path = `items/${Date.now()}.${ext}`;
-    const { error } = await supabase.storage.from("menu-images").upload(path, file);
-    if (!error) {
-      const { data } = supabase.storage.from("menu-images").getPublicUrl(path);
-      set("image_url", data.publicUrl);
+  async function uploadFile(file: File) {
+    setUploadState("uploading");
+    setUploadError("");
+
+    const data = new FormData();
+    data.append("file", file);
+
+    const res = await fetch("/api/admin/upload", { method: "POST", body: data });
+    const json = await res.json();
+
+    if (!res.ok) {
+      setUploadState("error");
+      setUploadError(json.error ?? "Upload fehlgeschlagen");
+      return;
     }
-    setUploadingImage(false);
+
+    set("image_url", json.url);
+    setUploadState("idle");
+  }
+
+  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) uploadFile(file);
+    // reset so same file can be re-selected
+    e.target.value = "";
+  }, []);
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) uploadFile(file);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -134,6 +158,7 @@ export function ItemForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+
       {/* Category */}
       <div>
         <label className={labelCls}>Kategorie</label>
@@ -160,7 +185,6 @@ export function ItemForm({
             </button>
           ))}
         </div>
-
         {(["de", "it", "en"] as Tab[]).map((t) => (
           <div key={t} className={`space-y-3 ${tab !== t ? "hidden" : ""}`}>
             <div>
@@ -181,41 +205,133 @@ export function ItemForm({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="text-xs text-muted-light dark:text-muted-dark mb-1 block">Preis</label>
-            <input type="number" step="0.01" value={form.price} onChange={(e) => set("price", e.target.value)} className={inputCls} placeholder="0.00" />
+            <input type="number" step="0.01" min="0" value={form.price} onChange={(e) => set("price", e.target.value)} className={inputCls} placeholder="0.00" />
           </div>
           {isWine && (
             <>
               <div>
                 <label className="text-xs text-muted-light dark:text-muted-dark mb-1 block">Glas</label>
-                <input type="number" step="0.01" value={form.price_glass} onChange={(e) => set("price_glass", e.target.value)} className={inputCls} placeholder="0.00" />
+                <input type="number" step="0.01" min="0" value={form.price_glass} onChange={(e) => set("price_glass", e.target.value)} className={inputCls} placeholder="0.00" />
               </div>
               <div>
                 <label className="text-xs text-muted-light dark:text-muted-dark mb-1 block">0,25 l</label>
-                <input type="number" step="0.01" value={form.price_quarter} onChange={(e) => set("price_quarter", e.target.value)} className={inputCls} placeholder="0.00" />
+                <input type="number" step="0.01" min="0" value={form.price_quarter} onChange={(e) => set("price_quarter", e.target.value)} className={inputCls} placeholder="0.00" />
               </div>
               <div>
                 <label className="text-xs text-muted-light dark:text-muted-dark mb-1 block">0,5 l</label>
-                <input type="number" step="0.01" value={form.price_half} onChange={(e) => set("price_half", e.target.value)} className={inputCls} placeholder="0.00" />
+                <input type="number" step="0.01" min="0" value={form.price_half} onChange={(e) => set("price_half", e.target.value)} className={inputCls} placeholder="0.00" />
               </div>
               <div>
                 <label className="text-xs text-muted-light dark:text-muted-dark mb-1 block">1,0 l</label>
-                <input type="number" step="0.01" value={form.price_liter} onChange={(e) => set("price_liter", e.target.value)} className={inputCls} placeholder="0.00" />
+                <input type="number" step="0.01" min="0" value={form.price_liter} onChange={(e) => set("price_liter", e.target.value)} className={inputCls} placeholder="0.00" />
               </div>
             </>
           )}
         </div>
       </div>
 
-      {/* Image */}
+      {/* ── Image upload ────────────────────────────────────────── */}
       <div>
         <label className={labelCls}>Bild</label>
-        <div className="flex gap-2">
-          <input value={form.image_url} onChange={(e) => set("image_url", e.target.value)} className={`${inputCls} flex-1`} placeholder="https://..." />
-          <label className="flex items-center gap-1.5 px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-xl text-sm cursor-pointer hover:bg-zinc-200 dark:hover:bg-zinc-700 transition whitespace-nowrap">
-            <Upload size={14} />
-            {uploadingImage ? "..." : "Upload"}
-            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-          </label>
+
+        {/* Preview or drop zone */}
+        {form.image_url ? (
+          <div className="relative rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 aspect-video mb-2">
+            <Image
+              src={form.image_url}
+              alt="Vorschau"
+              fill
+              className="object-cover"
+              sizes="480px"
+            />
+            {/* Overlay buttons */}
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center gap-2 opacity-0 hover:opacity-100">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-1.5 bg-white text-zinc-800 text-xs font-semibold px-3 py-1.5 rounded-full shadow hover:bg-zinc-100 transition"
+              >
+                <ImagePlus size={13} /> Ersetzen
+              </button>
+              <button
+                type="button"
+                onClick={() => set("image_url", "")}
+                className="flex items-center gap-1.5 bg-red-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow hover:bg-red-600 transition"
+              >
+                <Trash2 size={13} /> Entfernen
+              </button>
+            </div>
+            {/* Always-visible remove button on mobile */}
+            <button
+              type="button"
+              onClick={() => set("image_url", "")}
+              className="absolute top-2 right-2 w-7 h-7 bg-black/50 rounded-full flex items-center justify-center text-white sm:hidden"
+            >
+              <X size={13} />
+            </button>
+          </div>
+        ) : (
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`relative flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed cursor-pointer transition-colors aspect-video mb-2 ${
+              dragOver
+                ? "border-gold bg-gold/5"
+                : "border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50 hover:border-gold/60 hover:bg-gold/5"
+            }`}
+          >
+            {uploadState === "uploading" ? (
+              <>
+                <Loader2 size={28} className="text-gold animate-spin" />
+                <p className="text-sm text-muted-light dark:text-muted-dark">Wird hochgeladen…</p>
+              </>
+            ) : (
+              <>
+                <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center">
+                  <ImagePlus size={22} className="text-gold" />
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+                    Foto hochladen
+                  </p>
+                  <p className="text-xs text-muted-light dark:text-muted-dark mt-0.5">
+                    Tippen oder Bild hierher ziehen
+                  </p>
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-600 mt-1">
+                    JPG, PNG, WebP · max. 5 MB
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {uploadError && (
+          <p className="text-xs text-red-500 bg-red-50 dark:bg-red-950/20 px-3 py-2 rounded-lg mb-2">
+            {uploadError}
+          </p>
+        )}
+
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+
+        {/* Optional: manual URL input */}
+        <div>
+          <label className="text-[11px] text-zinc-400 dark:text-zinc-600 mb-1 block">Oder URL direkt eingeben</label>
+          <input
+            value={form.image_url}
+            onChange={(e) => { set("image_url", e.target.value); setUploadError(""); }}
+            className={inputCls}
+            placeholder="https://..."
+          />
         </div>
       </div>
 
@@ -281,7 +397,7 @@ export function ItemForm({
         <button type="button" onClick={onCancel} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 font-medium hover:bg-zinc-50 dark:hover:bg-zinc-800 transition">
           <X size={16} /> Abbrechen
         </button>
-        <button type="submit" disabled={loading} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gold text-white font-semibold hover:bg-gold-dark transition disabled:opacity-60">
+        <button type="submit" disabled={loading || uploadState === "uploading"} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gold text-white font-semibold hover:bg-gold-dark transition disabled:opacity-60">
           <Save size={16} /> {loading ? "Speichern..." : "Speichern"}
         </button>
       </div>
