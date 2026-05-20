@@ -15,12 +15,14 @@ export function AllergenFilter({
   locale: Locale;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     try {
       const s = sessionStorage.getItem("allergenFilter");
       if (s) onChange(JSON.parse(s));
     } catch {}
+    setMounted(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -35,37 +37,46 @@ export function AllergenFilter({
     sessionStorage.removeItem("allergenFilter");
   }
 
-  // Lock body scroll when sheet is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
-  const label = active.length > 0 ? `${active.length}` : "";
+  const hasActive = active.length > 0;
 
   return (
     <>
-      {/* FAB — sits above bottom safe area */}
-      <button
+      {/* FAB */}
+      <motion.button
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.8, type: "spring", stiffness: 260, damping: 20 }}
         onClick={() => setOpen(true)}
-        className="fixed right-4 z-40 flex items-center gap-2 bg-pine dark:bg-pine-light text-white px-4 py-3 rounded-full shadow-xl shadow-pine/20 font-semibold text-sm hover:bg-pine-dark dark:hover:bg-pine active:scale-95 transition-all duration-200"
+        className={`fixed right-4 z-40 flex items-center gap-2 text-white px-4 py-3 rounded-full font-semibold shadow-xl transition-all duration-200 active:scale-95 ${
+          hasActive
+            ? "bg-gold shadow-gold/30"
+            : "bg-pine shadow-pine/25"
+        }`}
         style={{ bottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
         aria-label="Allergene filtern"
       >
-        <SlidersHorizontal size={14} strokeWidth={2.5} />
-        <span className="text-[13px]">Filter</span>
-        {label && (
-          <span className="bg-gold text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
-            {label}
-          </span>
+        {/* Pulse ring — only on first load with no active filters to draw attention */}
+        {mounted && !hasActive && (
+          <span
+            className="absolute inset-0 rounded-full fab-ring"
+            aria-hidden="true"
+          />
         )}
-      </button>
+        <SlidersHorizontal size={14} strokeWidth={2.5} />
+        <span className="text-[13px]">
+          {hasActive ? `${active.length} Filter` : "Allergene"}
+        </span>
+      </motion.button>
 
       {/* Bottom sheet */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
@@ -73,36 +84,35 @@ export function AllergenFilter({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm touch-none"
+              className="fixed inset-0 z-50 bg-black/55 backdrop-blur-sm touch-none"
             />
 
-            {/* Sheet */}
             <motion.div
               key="sheet"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 320 }}
-              className="fixed inset-x-0 bottom-0 z-50 bg-bg-light dark:bg-surface-dark rounded-t-3xl shadow-2xl max-h-[88vh] flex flex-col"
+              className="fixed inset-x-0 bottom-0 z-50 bg-bg-light dark:bg-surface-dark rounded-t-3xl shadow-2xl max-h-[88dvh] flex flex-col"
               style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             >
               {/* Drag handle */}
-              <div className="flex justify-center pt-3 pb-1 shrink-0">
+              <div className="flex justify-center pt-3 pb-0.5 shrink-0">
                 <div className="w-10 h-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
               </div>
 
               {/* Header */}
-              <div className="flex items-center justify-between px-5 pt-2 pb-4 shrink-0">
+              <div className="flex items-center justify-between px-5 pt-3 pb-4 shrink-0">
                 <div>
-                  <h2 className="font-heading font-bold text-xl text-zinc-900 dark:text-zinc-100">
+                  <h2 className="font-heading font-bold text-[20px] text-zinc-900 dark:text-zinc-100 leading-tight">
                     Allergene filtern
                   </h2>
                   <p className="text-[12px] text-muted-light dark:text-muted-dark mt-0.5">
-                    Ausgewählte Allergene ausblenden
+                    Gerichte mit markierten Allergenen ausblenden
                   </p>
                 </div>
                 <div className="flex gap-2 items-center">
-                  {active.length > 0 && (
+                  {hasActive && (
                     <button
                       onClick={reset}
                       className="text-[13px] text-gold font-semibold px-3 py-1.5 rounded-full hover:bg-gold/10 transition-colors"
@@ -119,26 +129,26 @@ export function AllergenFilter({
                 </div>
               </div>
 
-              {/* Allergen grid — scrollable */}
+              {/* Allergen grid */}
               <div className="overflow-y-auto overscroll-contain px-5 pb-4 flex-1">
                 <div className="grid grid-cols-2 gap-2">
                   {ALLERGENS.map((a) => {
-                    const name = (a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de;
+                    const aName = (a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de;
                     const checked = active.includes(a.id);
                     return (
                       <button
                         key={a.id}
                         onClick={() => toggle(a.id)}
-                        className={`flex items-center gap-2.5 p-3 rounded-2xl border-2 text-left transition-all duration-150 active:scale-95 min-h-[56px] ${
+                        className={`flex items-center gap-2.5 p-3 rounded-2xl border-2 text-left transition-all duration-150 active:scale-95 min-h-[58px] ${
                           checked
                             ? "border-pine bg-pine/10 dark:bg-pine/20"
-                            : "border-zinc-200 dark:border-zinc-700 hover:border-gold/40"
+                            : "border-zinc-200/80 dark:border-zinc-700/60 hover:border-gold/40 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                         }`}
                       >
                         <span className="text-xl leading-none shrink-0">{a.icon}</span>
                         <div className="flex-1 min-w-0">
                           <p className="text-[11px] font-bold text-zinc-800 dark:text-zinc-200 leading-tight">{a.code}</p>
-                          <p className="text-[11px] text-muted-light dark:text-muted-dark leading-tight truncate">{name}</p>
+                          <p className="text-[11px] text-muted-light dark:text-muted-dark leading-tight truncate">{aName}</p>
                         </div>
                         {checked && (
                           <Check size={13} className="text-pine dark:text-pine-light shrink-0" strokeWidth={3} />
@@ -150,12 +160,12 @@ export function AllergenFilter({
               </div>
 
               {/* CTA */}
-              <div className="px-5 pb-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 shrink-0">
+              <div className="px-5 pb-5 pt-3 border-t border-zinc-100 dark:border-zinc-800/60 shrink-0">
                 <button
                   onClick={() => setOpen(false)}
-                  className="w-full bg-gold text-white font-bold py-3.5 rounded-2xl text-[15px] active:scale-[0.98] transition-transform shadow-md"
+                  className="w-full bg-gold text-white font-bold py-3.5 rounded-2xl text-[15px] active:scale-[0.98] transition-transform shadow-lg shadow-gold/20"
                 >
-                  {active.length > 0 ? `${active.length} Filter aktiv` : "Fertig"}
+                  {hasActive ? `${active.length} Filter aktiv – Fertig` : "Fertig"}
                 </button>
               </div>
             </motion.div>

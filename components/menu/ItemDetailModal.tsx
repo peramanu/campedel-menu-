@@ -6,24 +6,25 @@ import { X, Wine, Leaf, Sprout } from "lucide-react";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
 
+/* Warm, earthy palette — matches MenuCard & WineCard */
 type GradConfig = { lFrom: string; lTo: string; dFrom: string; dTo: string; icon: string };
 const CAT: Record<string, GradConfig> = {
-  "kalte-vorspeisen": { lFrom:"#dcfce7", lTo:"#bbf7d0", dFrom:"#052e16", dTo:"#064e3b", icon:"🥗" },
-  "suppen":           { lFrom:"#fef9c3", lTo:"#fde68a", dFrom:"#422006", dTo:"#78350f", icon:"🍲" },
-  "warme-vorspeisen": { lFrom:"#fce7f3", lTo:"#fbcfe8", dFrom:"#4a044e", dTo:"#831843", icon:"🍝" },
-  "hauptspeisen":     { lFrom:"#f1f5f9", lTo:"#e2e8f0", dFrom:"#1e293b", dTo:"#334155", icon:"🍽️" },
-  "kinder":           { lFrom:"#fef9c3", lTo:"#fef08a", dFrom:"#422006", dTo:"#713f12", icon:"👶" },
-  "dessert":          { lFrom:"#f3e8ff", lTo:"#e9d5ff", dFrom:"#3b0764", dTo:"#581c87", icon:"🍮" },
-  "warme-getraenke":  { lFrom:"#fff7ed", lTo:"#fed7aa", dFrom:"#431407", dTo:"#7c2d12", icon:"☕" },
-  "getraenke":        { lFrom:"#eff6ff", lTo:"#dbeafe", dFrom:"#172554", dTo:"#1e3a8a", icon:"🥤" },
-  "bier":             { lFrom:"#fefce8", lTo:"#fef08a", dFrom:"#422006", dTo:"#78350f", icon:"🍺" },
-  "aperitif":         { lFrom:"#fdf4ff", lTo:"#f5d0fe", dFrom:"#4a044e", dTo:"#6b21a8", icon:"🍸" },
-  "digestif":         { lFrom:"#fdf2f8", lTo:"#fce7f3", dFrom:"#4a044e", dTo:"#831843", icon:"🥃" },
-  "schaumwein":       { lFrom:"#fffbeb", lTo:"#fef3c7", dFrom:"#451a03", dTo:"#78350f", icon:"🥂" },
-  "weisswein":        { lFrom:"#fefce8", lTo:"#fef9c3", dFrom:"#422006", dTo:"#713f12", icon:"🍾" },
-  "rotwein":          { lFrom:"#fdf2f8", lTo:"#fce7f3", dFrom:"#4c0519", dTo:"#881337", icon:"🍷" },
+  "kalte-vorspeisen": { lFrom:"#edf5eb", lTo:"#dae8d5", dFrom:"#182118", dTo:"#1f2b1e", icon:"🥗" },
+  "suppen":           { lFrom:"#fdf5e5", lTo:"#f4e4bf", dFrom:"#281d09", dTo:"#33250d", icon:"🍲" },
+  "warme-vorspeisen": { lFrom:"#fdf1ee", lTo:"#f4dbd6", dFrom:"#271612", dTo:"#311c17", icon:"🍝" },
+  "hauptspeisen":     { lFrom:"#f5f1ea", lTo:"#e8e0d4", dFrom:"#201c15", dTo:"#29231b", icon:"🍽️" },
+  "kinder":           { lFrom:"#fdf8e5", lTo:"#f4eabb", dFrom:"#262009", dTo:"#2e270d", icon:"👶" },
+  "dessert":          { lFrom:"#f8f0f4", lTo:"#eed7e6", dFrom:"#24131e", dTo:"#2c1924", icon:"🍮" },
+  "warme-getraenke":  { lFrom:"#fdf3e9", lTo:"#f4ddc5", dFrom:"#28190d", dTo:"#342011", icon:"☕" },
+  "getraenke":        { lFrom:"#edf2f8", lTo:"#d9e7f0", dFrom:"#111b23", dTo:"#17222b", icon:"🥤" },
+  "bier":             { lFrom:"#fef8e3", lTo:"#f4e9b0", dFrom:"#231f0b", dTo:"#2b260e", icon:"🍺" },
+  "aperitif":         { lFrom:"#faf0f4", lTo:"#eed6e3", dFrom:"#22131f", dTo:"#2b1927", icon:"🍸" },
+  "digestif":         { lFrom:"#f9edec", lTo:"#eed5d4", dFrom:"#221313", dTo:"#2b1a1a", icon:"🥃" },
+  "schaumwein":       { lFrom:"#fdf7e8", lTo:"#f4e4bc", dFrom:"#281e09", dTo:"#34250d", icon:"🥂" },
+  "weisswein":        { lFrom:"#f8f4e5", lTo:"#ece6c3", dFrom:"#211d0d", dTo:"#2c2712", icon:"🍾" },
+  "rotwein":          { lFrom:"#f8ecef", lTo:"#eed4d9", dFrom:"#2a1217", dTo:"#35181e", icon:"🍷" },
 };
-const FALLBACK: GradConfig = { lFrom:"#f1f5f9", lTo:"#e2e8f0", dFrom:"#1e293b", dTo:"#334155", icon:"🍽️" };
+const FALLBACK: GradConfig = { lFrom:"#f5f1ea", lTo:"#e8e0d4", dFrom:"#201c15", dTo:"#29231b", icon:"🍽️" };
 
 const WINE_SLUGS = ["schaumwein", "weisswein", "rotwein"];
 
@@ -211,16 +212,17 @@ export function ItemDetailModal({
 
                 {/* Wine: tasting notes */}
                 {isWine && tasting && (
-                  <div className="bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl p-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-2">Verkostung</p>
-                    <p className="text-[13px] italic text-zinc-600 dark:text-zinc-400 leading-relaxed">{tasting}</p>
+                  <div className="rounded-2xl p-4 border border-gold/15 dark:border-gold/10"
+                    style={{ background: "linear-gradient(145deg, rgba(201,169,110,0.05), rgba(201,169,110,0.02))" }}>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold mb-2.5">Verkostung</p>
+                    <p className="text-[13px] italic font-heading text-zinc-600 dark:text-zinc-400 leading-relaxed">{tasting}</p>
                   </div>
                 )}
 
                 {/* Wine: price grid */}
                 {isWine && (
-                  <div className="bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl p-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-3">Preise</p>
+                  <div className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-3">Preise</p>
                     {!hasPriceGrid ? (
                       <div className="flex justify-between items-center">
                         <span className="text-[13px] text-muted-light dark:text-muted-dark">Flasche 0,75 l</span>
@@ -241,7 +243,7 @@ export function ItemDetailModal({
                 {/* Allergens */}
                 {item.allergens.length > 0 && (
                   <div>
-                    <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-light dark:text-muted-dark mb-2.5">Allergene</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-2.5">Allergene</p>
                     <div className="flex flex-wrap gap-2">
                       {item.allergens.map((a) => {
                         const aName = (a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de;

@@ -30,11 +30,14 @@ export function CategoryTabs({
             key={cat.slug}
             data-slug={cat.slug}
             onClick={() => onSelect(cat.slug)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all duration-200 ${
-              isActive
-                ? "bg-gold text-white shadow-md shadow-gold/25"
-                : "bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 hover:text-zinc-700 dark:hover:text-zinc-300"
-            }`}
+            className={`
+              flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full
+              text-[13px] font-semibold transition-all duration-200 whitespace-nowrap
+              ${isActive
+                ? "bg-gold text-white shadow-md shadow-gold/30"
+                : "bg-zinc-100/90 dark:bg-zinc-800/90 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-200/90 dark:hover:bg-zinc-700/90 hover:text-zinc-800 dark:hover:text-zinc-200"
+              }
+            `}
           >
             {cat.icon && <span className="text-sm leading-none">{cat.icon}</span>}
             <span>{name}</span>

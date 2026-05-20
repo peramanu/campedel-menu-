@@ -12,11 +12,11 @@
   --color-pine:          #2D5016;
   --color-pine-light:    #3D6B1F;
   --color-pine-dark:     #1E3710;
-  --color-bg-light:      #FAFAF8;
-  --color-bg-dark:       #1A1A18;
-  --color-surface-light: #FFFFFF;
-  --color-surface-dark:  #242420;
-  --color-muted-light:   #6B6B5E;
+  --color-bg-light:      #FAF8F3;
+  --color-bg-dark:       #181714;
+  --color-surface-light: #FFFEFB;
+  --color-surface-dark:  #222220;
+  --color-muted-light:   #7A7264;
   --color-muted-dark:    #9B9B8E;
 }
 
@@ -35,14 +35,14 @@ input, textarea, select { font-size: max(16px, 1rem); }
 /* ── Scrollbars ────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.3); border-radius: 9999px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(201,169,110,0.55); }
+::-webkit-scrollbar-thumb { background: rgba(201,169,110,0.35); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,169,110,0.6); }
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── Logo: white-bg PNG → invisible bg in both modes ────────
-   Light: multiply makes white disappear against #FAFAF8
-   Dark:  invert + screen makes black disappear against #1A1A18  */
+/* ── Logo blend mode ─────────────────────────────────────────
+   Light: multiply → white bg invisible against #FAF8F3
+   Dark:  invert + screen → black invisible against #181714  */
 .logo-img {
   mix-blend-mode: multiply;
   transition: filter 0.2s ease;
@@ -56,80 +56,112 @@ input, textarea, select { font-size: max(16px, 1rem); }
 .pt-safe  { padding-top:    env(safe-area-inset-top); }
 .pb-safe  { padding-bottom: env(safe-area-inset-bottom); }
 
-/* ── Section scroll target (header 65px + tabs 52px + gap 8) */
-.menu-section { scroll-margin-top: 130px; }
+/* ── Section scroll target (header 65px + tabs 54px + gap 8) */
+.menu-section { scroll-margin-top: 132px; }
 
-/* ── Hero gradient (warm gold glow from top) ───────────────── */
+/* ── Hero gradient — warm gold atmosphere ──────────────────── */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 120% 80% at 50% -10%,
-      rgba(201,169,110,0.18) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 85% 105%,
-      rgba(45,80,22,0.07) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 30% at 10% 90%,
-      rgba(201,169,110,0.05) 0%, transparent 50%);
+    radial-gradient(ellipse 130% 90% at 50% -15%,
+      rgba(201,169,110,0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 55% at 88% 108%,
+      rgba(45,80,22,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 8% 92%,
+      rgba(201,169,110,0.07) 0%, transparent 48%);
 }
 .dark .hero-gradient {
   background:
-    radial-gradient(ellipse 120% 80% at 50% -10%,
-      rgba(201,169,110,0.11) 0%, transparent 55%),
-    radial-gradient(ellipse 60% 50% at 85% 105%,
-      rgba(45,80,22,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse 40% 30% at 10% 90%,
-      rgba(201,169,110,0.04) 0%, transparent 50%);
+    radial-gradient(ellipse 130% 90% at 50% -15%,
+      rgba(201,169,110,0.13) 0%, transparent 52%),
+    radial-gradient(ellipse 70% 55% at 88% 108%,
+      rgba(45,80,22,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 40% at 8% 92%,
+      rgba(201,169,110,0.05) 0%, transparent 48%);
 }
 
-/* ── Diamond tile pattern (from the logo's geometric motif) ── */
+/* ── Diamond tile (logo motif) ─────────────────────────────── */
 .diamond-tile {
   background-image:
-    url("data:image/svg+xml,%3Csvg width='48' height='48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 4 L44 24 L24 44 L4 24 Z' fill='none' stroke='%23C9A96E' stroke-width='0.7' stroke-opacity='0.15'/%3E%3C/svg%3E");
+    url("data:image/svg+xml,%3Csvg width='48' height='48' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M24 4 L44 24 L24 44 L4 24 Z' fill='none' stroke='%23C9A96E' stroke-width='0.6' stroke-opacity='0.13'/%3E%3C/svg%3E");
   background-size: 48px 48px;
 }
 
-/* ── Card surface ──────────────────────────────────────────── */
+/* ── Card surface — warm white, tactile shadow ─────────────── */
 .card-surface {
-  background: #FFFFFF;
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  background: #FFFEFB;
+  border: 1px solid rgba(0,0,0,0.065);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.04),
+    0 3px 12px rgba(0,0,0,0.055),
+    0 0 0 0.5px rgba(201,169,110,0.06) inset;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
 }
 .dark .card-surface {
-  background: #242420;
-  border: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35);
+  background: #222220;
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.35),
+    0 4px 20px rgba(0,0,0,0.4),
+    0 0 0 0.5px rgba(201,169,110,0.08) inset;
 }
-/* Hover lift — only for non-touch devices */
 @media (hover: hover) {
   .card-surface:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.1);
-    border-color: rgba(201,169,110,0.25);
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.07),
+      0 12px 36px rgba(0,0,0,0.1),
+      0 0 0 1px rgba(201,169,110,0.2) inset;
+    border-color: rgba(201,169,110,0.28);
     transform: translateY(-2px);
   }
   .dark .card-surface:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.45);
-    border-color: rgba(201,169,110,0.2);
+    box-shadow:
+      0 2px 8px rgba(0,0,0,0.45),
+      0 12px 36px rgba(0,0,0,0.5),
+      0 0 0 1px rgba(201,169,110,0.15) inset;
+    border-color: rgba(201,169,110,0.22);
     transform: translateY(-2px);
   }
 }
 
-/* ── Gold price colour ─────────────────────────────────────── */
-.price-text { color: #A8854A; font-weight: 700; letter-spacing: -0.01em; }
+/* ── Gold price ─────────────────────────────────────────────── */
+.price-text {
+  color: #A8854A;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-family: var(--font-playfair), Georgia, serif;
+}
 .dark .price-text { color: #DFC08A; }
 
-/* ── Section divider line ──────────────────────────────────── */
+/* ── Section rule ───────────────────────────────────────────── */
 .section-rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(201,169,110,0.35), transparent);
-  margin-left: 8px;
+  background: linear-gradient(to right, rgba(201,169,110,0.4), transparent 70%);
+  margin-left: 6px;
 }
 
-/* ── Touch-friendly active states ─────────────────────────── */
+/* ── FAB pulse — draws attention to the allergen filter ─────── */
+@keyframes fab-pulse {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  70%  { transform: scale(1.55); opacity: 0; }
+  100% { transform: scale(1.55); opacity: 0; }
+}
+.fab-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #2D5016;
+  animation: fab-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+/* ── Touch active ───────────────────────────────────────────── */
 @media (max-width: 640px) {
   button { -webkit-tap-highlight-color: transparent; }
 }
 
-/* ── Extra small breakpoint helper ────────────────────────── */
+/* ── xs breakpoint ──────────────────────────────────────────── */
 @media (min-width: 400px) {
   .xs\:block  { display: block; }
   .xs\:hidden { display: none;  }

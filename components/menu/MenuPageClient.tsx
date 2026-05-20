@@ -126,17 +126,18 @@ export function MenuPageClient({
             className="overflow-hidden"
           >
             <div className="bg-gradient-to-r from-gold-dark via-gold to-gold-light">
-              <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-                <span className="text-xl shrink-0">✨</span>
-                <div className="min-w-0">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/80">Tagesangebot</p>
-                  <p className="text-sm font-semibold text-white truncate">
+              <div className="max-w-2xl mx-auto px-4 py-3.5 flex items-center justify-center gap-3">
+                <span className="text-sm shrink-0 leading-none text-white/70">✦</span>
+                <div className="text-center min-w-0">
+                  <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/70 mb-0.5">Tagesangebot</p>
+                  <p className="text-[13px] font-semibold text-white font-heading truncate">
                     {todaysSpecials.map((ds) => {
                       const item = items.find((i) => i.id === ds.item_id);
                       return item ? ((item[`name_${locale}` as keyof typeof item] as string) ?? item.name_de) : "";
                     }).filter(Boolean).join(" · ")}
                   </p>
                 </div>
+                <span className="text-sm shrink-0 leading-none text-white/70">✦</span>
               </div>
             </div>
           </motion.div>
@@ -171,9 +172,9 @@ export function MenuPageClient({
               className="menu-section pt-8 sm:pt-10"
             >
               {/* Section heading */}
-              <div className="flex items-center gap-3 mb-5">
-                <span className="text-2xl leading-none">{cat.icon}</span>
-                <h2 className="font-heading font-bold text-[21px] sm:text-[23px] text-zinc-900 dark:text-zinc-100 leading-tight tracking-tight">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-[22px] leading-none opacity-90">{cat.icon}</span>
+                <h2 className="font-heading font-bold text-[22px] sm:text-[24px] text-zinc-900 dark:text-zinc-100 leading-none tracking-tight">
                   {name}
                 </h2>
                 <div className="section-rule" />
@@ -229,10 +230,12 @@ export function MenuPageClient({
         })}
 
         {/* Allergen notice */}
-        <div className="mt-12 pt-5 border-t border-zinc-200/60 dark:border-zinc-800/60">
-          <div className="flex gap-2.5">
-            <span className="text-lg mt-0.5 shrink-0">⚠️</span>
-            <p className="text-[11px] text-muted-light dark:text-muted-dark leading-relaxed">
+        <div className="mt-14 pt-6 border-t border-zinc-200/50 dark:border-zinc-800/50">
+          <div className="flex gap-3 items-start">
+            <div className="shrink-0 w-7 h-7 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-200/40 dark:border-amber-800/30 flex items-center justify-center mt-0.5">
+              <span className="text-sm leading-none">⚠️</span>
+            </div>
+            <p className="text-[11.5px] text-muted-light dark:text-muted-dark leading-relaxed pt-0.5">
               Allergenkennzeichnung gemäß EU-Verordnung Nr. 1169/2011.
               Bei Fragen zu Allergenen wenden Sie sich bitte an unser Personal.
             </p>
@@ -240,15 +243,22 @@ export function MenuPageClient({
         </div>
 
         {/* Footer */}
-        <footer className="mt-10 pb-4 text-center">
-          <div className="h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-zinc-800 to-transparent mb-6" />
-          <p className="text-[11px] text-muted-light dark:text-muted-dark mb-1">
-            © {new Date().getFullYear()} Campedèl-Hof · Seiser Alm
+        <footer className="mt-14 pb-6 text-center">
+          <div className="flex items-center gap-4 mb-8">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent to-zinc-200/70 dark:to-zinc-800/70" />
+            <span className="text-[11px] text-gold/45 leading-none">◆</span>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent to-zinc-200/70 dark:to-zinc-800/70" />
+          </div>
+          <p className="text-[13px] font-heading font-semibold text-zinc-700 dark:text-zinc-300 mb-0.5">
+            Campedèl-Hof
           </p>
-          <p className="text-[10px] text-zinc-300 dark:text-zinc-700 mb-3">Traditionelle Südtiroler Küche</p>
+          <p className="text-[11px] text-muted-light dark:text-muted-dark mb-1">Seiser Alm · 1.844 m ü.M.</p>
+          <p className="text-[10px] text-zinc-400 dark:text-zinc-600 mb-5">
+            © {new Date().getFullYear()} · Traditionelle Südtiroler Küche
+          </p>
           <button
             onClick={() => setAdminOpen(true)}
-            className="text-[10px] text-zinc-300 dark:text-zinc-700 hover:text-zinc-400 dark:hover:text-zinc-500 transition-colors px-3 py-1"
+            className="text-[10px] text-zinc-300 dark:text-zinc-700 hover:text-zinc-500 dark:hover:text-zinc-500 transition-colors px-3 py-1 rounded"
           >
             Admin
           </button>

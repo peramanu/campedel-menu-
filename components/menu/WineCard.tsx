@@ -4,13 +4,14 @@ import { Wine, Leaf } from "lucide-react";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
 
+/* Warm wine-appropriate gradients — parchment, straw, garnet */
 type GradConfig = { lFrom: string; lTo: string; dFrom: string; dTo: string };
 const WINE_GRAD: Record<string, GradConfig> = {
-  "schaumwein": { lFrom:"#fffbeb", lTo:"#fef3c7", dFrom:"#451a03", dTo:"#78350f" },
-  "weisswein":  { lFrom:"#fefce8", lTo:"#fef9c3", dFrom:"#3d2c00", dTo:"#713f12" },
-  "rotwein":    { lFrom:"#fdf2f8", lTo:"#ffe4e6", dFrom:"#4c0519", dTo:"#881337" },
+  "schaumwein": { lFrom:"#fdf7e8", lTo:"#f4e4bc", dFrom:"#281e09", dTo:"#34250d" },
+  "weisswein":  { lFrom:"#f8f4e5", lTo:"#ece6c3", dFrom:"#211d0d", dTo:"#2c2712" },
+  "rotwein":    { lFrom:"#f8ecef", lTo:"#eed4d9", dFrom:"#2a1217", dTo:"#35181e" },
 };
-const WINE_GRAD_FALLBACK: GradConfig = { lFrom:"#fdf4ff", lTo:"#f5d0fe", dFrom:"#4a044e", dTo:"#6b21a8" };
+const WINE_GRAD_FALLBACK: GradConfig = { lFrom:"#faf0f4", lTo:"#eed5e2", dFrom:"#23131f", dTo:"#2c1927" };
 
 export function WineCard({
   item,
@@ -29,7 +30,7 @@ export function WineCard({
   const hasPriceGrid = item.price_glass || item.price_quarter || item.price_half || item.price_liter;
   const grad = (categorySlug ? WINE_GRAD[categorySlug] : null) ?? WINE_GRAD_FALLBACK;
 
-  /* ── Compact 2-col tile ───────────────────────────────────── */
+  /* ── Compact 2-col tile ─────────────────────────────────── */
   if (compact) {
     const keyPrice = item.price_glass ?? item.price_quarter ?? item.price_half ?? item.price ?? null;
     const keyLabel = item.price_glass ? "Glas" : item.price_quarter ? "0,25 l" : item.price_half ? "0,5 l" : "Fl.";
@@ -37,56 +38,62 @@ export function WineCard({
     return (
       <button
         onClick={onClick}
-        className="card-surface rounded-xl overflow-hidden h-full flex flex-col w-full text-left active:scale-[0.98] transition-transform"
+        className="card-surface rounded-2xl overflow-hidden h-full flex flex-col w-full text-left active:scale-[0.98] transition-transform"
       >
         {/* Bottle image / gradient header */}
-        <div className="relative w-full shrink-0" style={{ paddingTop: "90%" }}>
-          {/* Gradient background */}
-          <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${grad.lFrom}, ${grad.lTo})` }} />
-          <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${grad.dFrom}, ${grad.dTo})` }} />
+        <div className="relative w-full shrink-0" style={{ paddingTop: "92%" }}>
+          <div className="absolute inset-0 dark:hidden"
+            style={{ background: `linear-gradient(148deg, ${grad.lFrom} 0%, ${grad.lTo} 100%)` }} />
+          <div className="absolute inset-0 hidden dark:block"
+            style={{ background: `linear-gradient(148deg, ${grad.dFrom} 0%, ${grad.dTo} 100%)` }} />
 
           {item.image_url ? (
-            /* Bottle image — object-contain keeps all bottles the same visual size */
-            <div className="absolute inset-0 p-2">
+            <div className="absolute inset-0 p-2.5">
               <div className="relative w-full h-full">
                 <Image
                   src={item.image_url}
                   alt={name}
                   fill
-                  className="object-contain drop-shadow-lg"
+                  className="object-contain drop-shadow-xl"
                   sizes="(max-width: 640px) 44vw, 200px"
                 />
               </div>
             </div>
           ) : (
             <div className="absolute inset-0 flex items-center justify-center">
-              <Wine size={32} className="text-gold opacity-30" />
+              <Wine size={30} className="text-gold opacity-25" />
             </div>
           )}
 
           {item.is_bio && (
-            <span className="absolute top-1.5 left-1.5 bg-pine text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full z-10">🌱</span>
+            <span className="absolute top-2 left-2 bg-pine text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full z-10 uppercase tracking-wider">
+              🌱 Bio
+            </span>
           )}
-          <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-black/10 to-transparent" />
+
+          {/* Soft bottom fade */}
+          <div className="absolute bottom-0 inset-x-0 h-6 bg-gradient-to-t from-black/10 to-transparent" />
         </div>
 
         {/* Text */}
-        <div className="px-2.5 pt-2 pb-2.5 flex flex-col flex-1">
-          <h3 className="font-heading font-bold text-[13px] leading-snug text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-0.5">
+        <div className="px-3 pt-2.5 pb-3 flex flex-col flex-1">
+          <h3 className="font-heading font-semibold text-[13px] leading-snug text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-0.5">
             {name}
           </h3>
           {item.wine_producer && (
-            <p className="text-[11px] text-muted-light dark:text-muted-dark line-clamp-1 mb-1">{item.wine_producer}</p>
+            <p className="text-[10.5px] text-muted-light dark:text-muted-dark line-clamp-1 mb-1 italic">
+              {item.wine_producer}
+            </p>
           )}
           {item.wine_doc && (
-            <span className="self-start text-[10px] font-semibold bg-pine/10 text-pine dark:text-pine-light px-1.5 py-0.5 rounded-full border border-pine/15 mb-1">
+            <span className="self-start text-[9.5px] font-semibold bg-pine/8 dark:bg-pine/15 text-pine dark:text-pine-light px-1.5 py-0.5 rounded-full border border-pine/15 mb-1.5">
               {item.wine_doc}
             </span>
           )}
-          <div className="mt-auto pt-1 flex items-end justify-between gap-1">
+          <div className="mt-auto flex items-end justify-between gap-1">
             <span className="text-[10px] text-muted-light dark:text-muted-dark">{hasPriceGrid ? keyLabel : "Fl."}</span>
             {keyPrice != null && (
-              <span className="price-text text-[14px] leading-none">{formatPrice(keyPrice)}</span>
+              <span className="price-text text-[15px] leading-none">{formatPrice(keyPrice)}</span>
             )}
           </div>
         </div>
@@ -94,18 +101,21 @@ export function WineCard({
     );
   }
 
-  /* ── Full card (single-column, original style) ─────────────── */
+  /* ── Full card (single-column) ──────────────────────────── */
   return (
     <button
       onClick={onClick}
       className="card-surface rounded-2xl overflow-hidden w-full text-left active:scale-[0.99] transition-transform"
     >
-      {/* Gold top accent line */}
-      <div className="h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
+      {/* Gold top accent */}
+      <div className="h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent" />
 
       <div className="p-4">
-        <div className="flex gap-3">
-          <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 flex items-center justify-center border border-gold/20 overflow-hidden relative">
+        <div className="flex gap-3.5">
+          <div className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden relative border border-gold/20"
+            style={{ background: `linear-gradient(148deg, ${grad.lFrom}, ${grad.lTo})` }}>
+            <div className="dark:block hidden absolute inset-0"
+              style={{ background: `linear-gradient(148deg, ${grad.dFrom}, ${grad.dTo})` }} />
             {item.image_url ? (
               <div className="absolute inset-1">
                 <div className="relative w-full h-full">
@@ -113,7 +123,9 @@ export function WineCard({
                 </div>
               </div>
             ) : (
-              <Wine size={18} className="text-gold" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Wine size={18} className="text-gold opacity-60" />
+              </div>
             )}
           </div>
 
@@ -123,25 +135,27 @@ export function WineCard({
                 {name}
               </h3>
               {item.is_bio && (
-                <span className="flex items-center gap-1 bg-pine/10 text-pine dark:text-pine-light text-[11px] font-bold px-1.5 py-0.5 rounded-full shrink-0 border border-pine/20">
-                  <Leaf size={9} /> BIO
+                <span className="flex items-center gap-1 bg-pine/10 text-pine dark:text-pine-light text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0 border border-pine/20">
+                  <Leaf size={8} /> BIO
                 </span>
               )}
             </div>
             {item.wine_producer && (
-              <p className="text-[12px] text-muted-light dark:text-muted-dark mt-0.5 leading-tight">
+              <p className="text-[12px] italic text-muted-light dark:text-muted-dark mt-0.5 leading-tight">
                 {item.wine_producer}
-                {item.wine_region && <span className="text-zinc-400 dark:text-zinc-600"> · {item.wine_region}</span>}
+                {item.wine_region && (
+                  <span className="not-italic text-zinc-400 dark:text-zinc-600"> · {item.wine_region}</span>
+                )}
               </p>
             )}
             <div className="flex flex-wrap gap-1 mt-1.5">
               {item.wine_doc && (
-                <span className="bg-pine/10 text-pine dark:text-pine-light text-[11px] font-semibold px-2 py-0.5 rounded-full border border-pine/15">
+                <span className="bg-pine/10 text-pine dark:text-pine-light text-[10.5px] font-semibold px-2 py-0.5 rounded-full border border-pine/15">
                   {item.wine_doc}
                 </span>
               )}
               {item.wine_style && (
-                <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[11px] px-2 py-0.5 rounded-full">
+                <span className="bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 text-[10.5px] px-2 py-0.5 rounded-full">
                   {item.wine_style}
                 </span>
               )}
@@ -149,7 +163,7 @@ export function WineCard({
             {item.wine_grapes && item.wine_grapes.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-1.5">
                 {item.wine_grapes.map((g) => (
-                  <span key={g} className="bg-gold/10 text-gold-dark dark:text-gold text-[11px] px-2 py-0.5 rounded-full font-medium border border-gold/20">
+                  <span key={g} className="bg-gold/10 text-gold-dark dark:text-gold text-[10.5px] px-2 py-0.5 rounded-full font-medium border border-gold/20">
                     {g}
                   </span>
                 ))}
