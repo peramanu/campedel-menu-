@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Wine, Leaf, Sprout } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
 
@@ -41,6 +42,7 @@ export function ItemDetailModal({
   specialPrice?: number | null;
   onClose: () => void;
 }) {
+  const t = useTranslations("menu");
   const isWine = WINE_SLUGS.includes(categorySlug);
 
   // Lock body scroll while open
@@ -214,7 +216,7 @@ export function ItemDetailModal({
                 {isWine && tasting && (
                   <div className="rounded-2xl p-4 border border-gold/15 dark:border-gold/10"
                     style={{ background: "linear-gradient(145deg, rgba(201,169,110,0.05), rgba(201,169,110,0.02))" }}>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold mb-2.5">Verkostung</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold mb-2.5">{t("tasting")}</p>
                     <p className="text-[13px] italic font-heading text-zinc-600 dark:text-zinc-400 leading-relaxed">{tasting}</p>
                   </div>
                 )}
@@ -222,19 +224,19 @@ export function ItemDetailModal({
                 {/* Wine: price grid */}
                 {isWine && (
                   <div className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-3">Preise</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-3">{t("prices")}</p>
                     {!hasPriceGrid ? (
                       <div className="flex justify-between items-center">
-                        <span className="text-[13px] text-muted-light dark:text-muted-dark">Flasche 0,75 l</span>
+                        <span className="text-[13px] text-muted-light dark:text-muted-dark">{t("priceBottle")} 0,75 l</span>
                         {item.price != null && <span className="price-text text-[18px]">{formatPrice(item.price)}</span>}
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {item.price_glass   != null && <WinePriceRow label="Glas"      price={item.price_glass} />}
-                        {item.price_quarter != null && <WinePriceRow label="0,25 l"    price={item.price_quarter} />}
-                        {item.price_half    != null && <WinePriceRow label="0,5 l"     price={item.price_half} />}
-                        {item.price_liter   != null && <WinePriceRow label="1,0 l"     price={item.price_liter} />}
-                        {item.price         != null && <WinePriceRow label="Flasche"   price={item.price} accent />}
+                        {item.price_glass   != null && <WinePriceRow label={t("priceGlass")}   price={item.price_glass} />}
+                        {item.price_quarter != null && <WinePriceRow label={t("priceQuarter")} price={item.price_quarter} />}
+                        {item.price_half    != null && <WinePriceRow label={t("priceHalf")}    price={item.price_half} />}
+                        {item.price_liter   != null && <WinePriceRow label={t("priceLiter")}   price={item.price_liter} />}
+                        {item.price         != null && <WinePriceRow label={t("priceBottle")}  price={item.price} accent />}
                       </div>
                     )}
                   </div>
@@ -243,7 +245,7 @@ export function ItemDetailModal({
                 {/* Allergens */}
                 {item.allergens.length > 0 && (
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-2.5">Allergene</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-2.5">{t("allergens")}</p>
                     <div className="flex flex-wrap gap-2">
                       {item.allergens.map((a) => {
                         const aName = (a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de;
@@ -263,7 +265,7 @@ export function ItemDetailModal({
 
                 {/* Legal note */}
                 <p className="text-[10px] text-muted-light dark:text-muted-dark">
-                  Allergenkennzeichnung gemäß EU-VO 1169/2011
+                  {t("allergenLegal")}
                 </p>
               </div>
             </div>

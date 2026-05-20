@@ -24,7 +24,12 @@
     "tastingNotes": "Verkostungsnotizen",
     "grapes": "Traubensorten",
     "wineStyle": "Stil",
-    "wineRegion": "Herkunft"
+    "wineRegion": "Herkunft",
+    "done": "Fertig",
+    "filterSubtitle": "Gerichte mit markierten Allergenen ausblenden",
+    "prices": "Preise",
+    "tasting": "Verkostung",
+    "allergenLegal": "Allergenkennzeichnung gemäß EU-VO 1169/2011"
   },
   "hero": {
     "tagline": "Hof · Seiser Alm",

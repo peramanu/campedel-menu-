@@ -24,7 +24,12 @@
     "tastingNotes": "Tasting notes",
     "grapes": "Grape varieties",
     "wineStyle": "Style",
-    "wineRegion": "Origin"
+    "wineRegion": "Origin",
+    "done": "Done",
+    "filterSubtitle": "Hide dishes containing selected allergens",
+    "prices": "Prices",
+    "tasting": "Tasting",
+    "allergenLegal": "Allergen information in accordance with EU Reg. 1169/2011"
   },
   "hero": {
     "tagline": "Farm · Seiser Alm",

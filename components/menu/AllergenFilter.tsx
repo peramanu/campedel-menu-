@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SlidersHorizontal, X, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ALLERGENS } from "@/lib/allergens";
 import type { Locale } from "@/types";
 
@@ -14,6 +15,7 @@ export function AllergenFilter({
   onChange: (ids: number[]) => void;
   locale: Locale;
 }) {
+  const t = useTranslations("menu");
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -58,7 +60,7 @@ export function AllergenFilter({
             : "bg-pine shadow-pine/25"
         }`}
         style={{ bottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
-        aria-label="Allergene filtern"
+        aria-label={t("filterAllergens")}
       >
         {/* Pulse ring — only on first load with no active filters to draw attention */}
         {mounted && !hasActive && (
@@ -69,7 +71,7 @@ export function AllergenFilter({
         )}
         <SlidersHorizontal size={14} strokeWidth={2.5} />
         <span className="text-[13px]">
-          {hasActive ? `${active.length} Filter` : "Allergene"}
+          {hasActive ? `${active.length} Filter` : t("allergens")}
         </span>
       </motion.button>
 
@@ -105,10 +107,10 @@ export function AllergenFilter({
               <div className="flex items-center justify-between px-5 pt-3 pb-4 shrink-0">
                 <div>
                   <h2 className="font-heading font-bold text-[20px] text-zinc-900 dark:text-zinc-100 leading-tight">
-                    Allergene filtern
+                    {t("filterAllergens")}
                   </h2>
                   <p className="text-[12px] text-muted-light dark:text-muted-dark mt-0.5">
-                    Gerichte mit markierten Allergenen ausblenden
+                    {t("filterSubtitle")}
                   </p>
                 </div>
                 <div className="flex gap-2 items-center">
@@ -117,7 +119,7 @@ export function AllergenFilter({
                       onClick={reset}
                       className="text-[13px] text-gold font-semibold px-3 py-1.5 rounded-full hover:bg-gold/10 transition-colors"
                     >
-                      Zurücksetzen
+                      {t("resetFilters")}
                     </button>
                   )}
                   <button
@@ -165,7 +167,7 @@ export function AllergenFilter({
                   onClick={() => setOpen(false)}
                   className="w-full bg-gold text-white font-bold py-3.5 rounded-2xl text-[15px] active:scale-[0.98] transition-transform shadow-lg shadow-gold/20"
                 >
-                  {hasActive ? `${active.length} Filter aktiv – Fertig` : "Fertig"}
+                  {hasActive ? `${active.length} × ${t("done")}` : t("done")}
                 </button>
               </div>
             </motion.div>

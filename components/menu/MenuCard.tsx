@@ -122,7 +122,7 @@ export function MenuCard({
               {item.allergens.slice(0, 4).map((a) => (
                 <span
                   key={a.id}
-                  title={a.name_de}
+                  title={(a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de}
                   className="text-[8.5px] font-semibold text-zinc-400 dark:text-zinc-600 leading-none"
                 >
                   {a.code}

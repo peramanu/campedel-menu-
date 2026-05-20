@@ -24,7 +24,12 @@
     "tastingNotes": "Note di degustazione",
     "grapes": "Vitigni",
     "wineStyle": "Stile",
-    "wineRegion": "Provenienza"
+    "wineRegion": "Provenienza",
+    "done": "Fatto",
+    "filterSubtitle": "Nascondi i piatti con gli allergeni selezionati",
+    "prices": "Prezzi",
+    "tasting": "Degustazione",
+    "allergenLegal": "Dichiarazione allergeni ai sensi del Reg. UE 1169/2011"
   },
   "hero": {
     "tagline": "Maso · Alpe di Siusi",
