@@ -156,6 +156,28 @@ input, textarea, select { font-size: max(16px, 1rem); }
   pointer-events: none;
 }
 
+/* ── Language pill glass (used by LanguageSwitcher) ─────────── */
+:root {
+  --lang-pill-bg:
+    linear-gradient(165deg, rgba(255,255,255,0.98) 0%, rgba(255,254,251,0.88) 100%);
+  --lang-pill-border: rgba(201,169,110,0.28);
+  --lang-pill-shadow:
+    0 1px 2px rgba(0,0,0,0.09),
+    0 3px 12px rgba(0,0,0,0.07),
+    inset 0 1px 0 rgba(255,255,255,1),
+    inset 0 -1px 0 rgba(201,169,110,0.1);
+}
+.dark {
+  --lang-pill-bg:
+    linear-gradient(165deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0.06) 100%);
+  --lang-pill-border: rgba(201,169,110,0.3);
+  --lang-pill-shadow:
+    0 1px 2px rgba(0,0,0,0.45),
+    0 3px 12px rgba(0,0,0,0.32),
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -1px 0 rgba(0,0,0,0.28);
+}
+
 /* ── Theme switch: circular wipe (View Transitions API) ─────── */
 @keyframes vt-circle-expand {
   from { clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%)); }
