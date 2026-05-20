@@ -121,18 +121,29 @@ export function ItemDetailModal({
               <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }} />
 
               {item.image_url ? (
-                /* object-contain so bottle is never cropped; gradient shows around it */
-                <div className="absolute inset-0 p-4">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={item.image_url}
-                      alt={name}
-                      fill
-                      className="object-contain drop-shadow-2xl"
-                      sizes="500px"
-                    />
+                isWine ? (
+                  /* Wine bottle: contain so the bottle shape is never cropped */
+                  <div className="absolute inset-0 p-4">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={item.image_url}
+                        alt={name}
+                        fill
+                        className="object-contain drop-shadow-2xl"
+                        sizes="500px"
+                      />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  /* Food: cover fills the hero — no gradient bleed around the photo */
+                  <Image
+                    src={item.image_url}
+                    alt={name}
+                    fill
+                    className="object-cover"
+                    sizes="500px"
+                  />
+                )
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className="text-[80px] leading-none opacity-[0.15] select-none">{cfg.icon}</span>
