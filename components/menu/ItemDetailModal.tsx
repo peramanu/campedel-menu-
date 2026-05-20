@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import { X, Wine, Leaf, Sprout } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
@@ -44,6 +44,7 @@ export function ItemDetailModal({
 }) {
   const t = useTranslations("menu");
   const isWine = WINE_SLUGS.includes(categorySlug);
+  const dragControls = useDragControls();
 
   // Lock body scroll while open
   useEffect(() => {
@@ -85,14 +86,25 @@ export function ItemDetailModal({
           {/* Sheet — slides up from bottom */}
           <motion.div
             key="sheet"
+            drag="y"
+            dragControls={dragControls}
+            dragListener={false}
+            dragConstraints={{ top: 0 }}
+            dragElastic={{ top: 0.05, bottom: 0.5 }}
+            onDragEnd={(_, info) => {
+              if (info.velocity.y > 300 || info.offset.y > 140) onClose();
+            }}
             initial={{ y: "100%", scale: 0.98 }}
             animate={{ y: 0, scale: 1 }}
             exit={{ y: "100%", scale: 0.98 }}
             transition={{ type: "spring", damping: 32, stiffness: 340, mass: 0.85 }}
             className="fixed bottom-0 inset-x-0 z-50 max-h-[92dvh] flex flex-col sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-h-[85dvh] sm:w-full sm:max-w-md sm:rounded-3xl overflow-hidden bg-surface-light dark:bg-surface-dark shadow-2xl"
           >
-            {/* Drag handle (mobile) */}
-            <div className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0">
+            {/* Drag handle (mobile) — initiates swipe-to-close */}
+            <div
+              className="sm:hidden flex justify-center pt-2.5 pb-1 shrink-0 touch-none cursor-grab active:cursor-grabbing"
+              onPointerDown={(e) => dragControls.start(e)}
+            >
               <div className="w-9 h-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
             </div>
 

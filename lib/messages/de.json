@@ -29,7 +29,9 @@
     "filterSubtitle": "Gerichte mit markierten Allergenen ausblenden",
     "prices": "Preise",
     "tasting": "Verkostung",
-    "allergenLegal": "Allergenkennzeichnung gemäß EU-VO 1169/2011"
+    "allergenLegal": "Allergenkennzeichnung gemäß EU-VO 1169/2011",
+    "searchPlaceholder": "Gerichte suchen…",
+    "noResults": "Kein Ergebnis für"
   },
   "hero": {
     "tagline": "Hof · Seiser Alm",
@@ -49,7 +51,10 @@
     "fri": "Freitag",
     "sat": "Samstag",
     "sun": "Sonntag",
-    "closed": "Geschlossen"
+    "closed": "Geschlossen",
+    "seasonalNote": "Geöffnet von Anfang August bis Ende Oktober · Witterungsabhängig",
+    "viewOnMap": "Auf Karte öffnen",
+    "directions": "Anfahrt"
   },
   "admin": {
     "login": "Anmelden",

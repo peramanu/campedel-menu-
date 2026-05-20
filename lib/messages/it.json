@@ -29,7 +29,9 @@
     "filterSubtitle": "Nascondi i piatti con gli allergeni selezionati",
     "prices": "Prezzi",
     "tasting": "Degustazione",
-    "allergenLegal": "Dichiarazione allergeni ai sensi del Reg. UE 1169/2011"
+    "allergenLegal": "Dichiarazione allergeni ai sensi del Reg. UE 1169/2011",
+    "searchPlaceholder": "Cerca piatti…",
+    "noResults": "Nessun risultato per"
   },
   "hero": {
     "tagline": "Maso · Alpe di Siusi",
@@ -49,7 +51,10 @@
     "fri": "Venerdì",
     "sat": "Sabato",
     "sun": "Domenica",
-    "closed": "Chiuso"
+    "closed": "Chiuso",
+    "seasonalNote": "Aperto da inizio agosto a fine ottobre · In base alle condizioni meteo",
+    "viewOnMap": "Apri sulla mappa",
+    "directions": "Come arrivare"
   },
   "admin": {
     "login": "Accedi",

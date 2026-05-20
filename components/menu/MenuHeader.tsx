@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
-import { Sun, Moon, Monitor } from "lucide-react";
+import Link from "next/link";
+import { Sun, Moon, Monitor, Info } from "lucide-react";
 import { useTheme } from "@/components/ui/ThemeProvider";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -54,7 +55,7 @@ export function MenuHeader({ locale }: { locale: string }) {
           </div>
 
           {/* Right controls */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0">
             {/* Theme toggle — single cycling button */}
             <button
               onClick={(e) => {
@@ -70,6 +71,16 @@ export function MenuHeader({ locale }: { locale: string }) {
             >
               <Icon size={15} strokeWidth={1.8} />
             </button>
+
+            {/* Info page link */}
+            <Link
+              href="/info"
+              aria-label="Info & Kontakt"
+              title="Info & Kontakt"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 text-zinc-500 dark:text-zinc-400 hover:text-gold dark:hover:text-gold hover:bg-gold/8 dark:hover:bg-gold/10 transition-all duration-200 active:scale-90"
+            >
+              <Info size={15} strokeWidth={1.8} />
+            </Link>
 
             {/* Language switcher */}
             <LanguageSwitcher current={locale} compact />

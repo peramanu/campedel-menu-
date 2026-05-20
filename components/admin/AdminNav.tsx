@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, UtensilsCrossed, Tags, QrCode, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, UtensilsCrossed, Tags, QrCode, Image, LogOut, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { SwRegister } from "./SwRegister";
 
@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin/dashboard",  icon: LayoutDashboard, label: "Dashboard"  },
   { href: "/admin/items",      icon: UtensilsCrossed, label: "Speisen"    },
   { href: "/admin/categories", icon: Tags,            label: "Kategorien" },
+  { href: "/admin/images",     icon: Image,           label: "Fotos"      },
   { href: "/admin/qr",         icon: QrCode,          label: "QR-Code"    },
 ];
 

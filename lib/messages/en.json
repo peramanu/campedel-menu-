@@ -29,7 +29,9 @@
     "filterSubtitle": "Hide dishes containing selected allergens",
     "prices": "Prices",
     "tasting": "Tasting",
-    "allergenLegal": "Allergen information in accordance with EU Reg. 1169/2011"
+    "allergenLegal": "Allergen information in accordance with EU Reg. 1169/2011",
+    "searchPlaceholder": "Search dishes…",
+    "noResults": "No results for"
   },
   "hero": {
     "tagline": "Farm · Seiser Alm",
@@ -49,7 +51,10 @@
     "fri": "Friday",
     "sat": "Saturday",
     "sun": "Sunday",
-    "closed": "Closed"
+    "closed": "Closed",
+    "seasonalNote": "Open from early August to end of October · Weather permitting",
+    "viewOnMap": "Open on map",
+    "directions": "Directions"
   },
   "admin": {
     "login": "Sign in",
