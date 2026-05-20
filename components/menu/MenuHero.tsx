@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { WeatherWidget } from "./WeatherWidget";
 
 export function MenuHero({
   locale,
@@ -92,10 +93,20 @@ export function MenuHero({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.38, delay: 0.4 }}
-          className="text-[13px] sm:text-[14px] italic font-heading text-muted-light dark:text-muted-dark mb-8 leading-relaxed max-w-[280px]"
+          className="text-[13px] sm:text-[14px] italic font-heading text-muted-light dark:text-muted-dark mb-4 leading-relaxed max-w-[280px]"
         >
           {t("tagline")}
         </motion.p>
+
+        {/* Live weather — Seiser Alm */}
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.38, delay: 0.5 }}
+          className="mb-6"
+        >
+          <WeatherWidget />
+        </motion.div>
 
         {/* Language switcher */}
         <motion.div

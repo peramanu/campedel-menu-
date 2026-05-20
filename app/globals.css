@@ -156,6 +156,31 @@ input, textarea, select { font-size: max(16px, 1rem); }
   pointer-events: none;
 }
 
+/* ── Photo strip infinite scroll ────────────────────────────── */
+@keyframes photo-drift {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.photo-strip-track {
+  animation: photo-drift 48s linear infinite;
+}
+.photo-strip-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .photo-strip-track { animation: none; }
+}
+
+/* ── Print: only the QR card ────────────────────────────────── */
+@media print {
+  body > *        { display: none !important; }
+  #qr-print-card  { display: flex !important; position: fixed !important;
+                    inset: 0 !important; margin: auto !important;
+                    width: 320px !important; height: 500px !important;
+                    box-shadow: none !important; border-radius: 24px !important;
+                    overflow: hidden !important; z-index: 9999 !important; }
+}
+
 /* ── Language pill glass (used by LanguageSwitcher) ─────────── */
 :root {
   --lang-pill-bg:

@@ -1,13 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, UtensilsCrossed, Tags, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, UtensilsCrossed, Tags, QrCode, LogOut, ArrowLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { SwRegister } from "./SwRegister";
 
 const NAV = [
-  { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/items",     icon: UtensilsCrossed, label: "Speisen"   },
-  { href: "/admin/categories",icon: Tags,            label: "Kategorien"},
+  { href: "/admin/dashboard",  icon: LayoutDashboard, label: "Dashboard"  },
+  { href: "/admin/items",      icon: UtensilsCrossed, label: "Speisen"    },
+  { href: "/admin/categories", icon: Tags,            label: "Kategorien" },
+  { href: "/admin/qr",         icon: QrCode,          label: "QR-Code"    },
 ];
 
 export function AdminNav() {
@@ -73,6 +75,7 @@ export function AdminNav() {
       </div>
       {/* Gold accent line — mirrors the guest menu header */}
       <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
+      <SwRegister />
     </header>
   );
 }

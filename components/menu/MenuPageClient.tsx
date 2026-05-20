@@ -7,6 +7,7 @@ import { WineCard } from "./WineCard";
 import { AllergenFilter } from "./AllergenFilter";
 import { MenuHero } from "./MenuHero";
 import { ItemDetailModal } from "./ItemDetailModal";
+import { PhotoStrip } from "./PhotoStrip";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { Lock, X, LogIn } from "lucide-react";
@@ -172,28 +173,41 @@ export function MenuPageClient({
               className="menu-section pt-8 sm:pt-10"
             >
               {/* Section heading */}
-              <div className="flex items-center gap-3 mb-6">
+              <motion.div
+                className="flex items-center gap-3 mb-6"
+                initial={{ opacity: 0, x: -18 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
+              >
                 <span className="text-[22px] leading-none opacity-90">{cat.icon}</span>
                 <h2 className="font-heading font-bold text-[22px] sm:text-[24px] text-zinc-900 dark:text-zinc-100 leading-none tracking-tight">
                   {name}
                 </h2>
                 <div className="section-rule" />
-              </div>
+              </motion.div>
 
               {catItems.length === 0 ? (
                 <p className="text-muted-light dark:text-muted-dark text-sm py-8 text-center italic">
                   Derzeit nicht verfügbar
                 </p>
               ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  {catItems.map((item, i) => {
+                <motion.div
+                  className="grid grid-cols-2 gap-3"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-60px" }}
+                  variants={{ visible: { transition: { staggerChildren: 0.07 } } }}
+                >
+                  {catItems.map((item) => {
                     const special = specialMap.get(item.id);
                     return (
                       <motion.div
                         key={item.id}
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.25, delay: Math.min(i * 0.05, 0.3) }}
+                        variants={{
+                          hidden: { opacity: 0, y: 26 },
+                          visible: { opacity: 1, y: 0, transition: { duration: 0.44, ease: [0.25, 0.1, 0.25, 1] } },
+                        }}
                         className="flex"
                       >
                         <div className="w-full">
@@ -223,11 +237,14 @@ export function MenuPageClient({
                       </motion.div>
                     );
                   })}
-                </div>
+                </motion.div>
               )}
             </section>
           );
         })}
+
+        {/* Photo strip — real farm photos */}
+        <PhotoStrip />
 
         {/* Allergen notice */}
         <div className="mt-14 pt-6 border-t border-zinc-200/50 dark:border-zinc-800/50">

@@ -1,0 +1,26 @@
+{
+  "name": "Campedèl Verwaltung",
+  "short_name": "Campedèl",
+  "description": "Menüverwaltung für den Campedèl-Hof auf der Seiser Alm",
+  "start_url": "/admin/dashboard",
+  "scope": "/admin/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#C9A96E",
+  "background_color": "#FAF8F3",
+  "categories": ["food", "business"],
+  "icons": [
+    {
+      "src": "/logo/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

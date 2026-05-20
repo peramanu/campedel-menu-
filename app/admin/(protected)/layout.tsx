@@ -1,6 +1,17 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { AdminNav } from "@/components/admin/AdminNav";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Campedèl Verwaltung",
+  manifest: "/admin-manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Campedèl",
+    statusBarStyle: "black-translucent",
+  },
+};
 
 export default async function ProtectedAdminLayout({
   children,
