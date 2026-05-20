@@ -133,15 +133,25 @@ export function AllergenFilter({
 
               {/* Allergen grid */}
               <div className="overflow-y-auto overscroll-contain px-5 pb-4 flex-1">
-                <div className="grid grid-cols-2 gap-2">
+                <motion.div
+                  className="grid grid-cols-2 gap-2"
+                  initial="hidden"
+                  animate="visible"
+                  variants={{ visible: { transition: { staggerChildren: 0.03, delayChildren: 0.05 } } }}
+                >
                   {ALLERGENS.map((a) => {
                     const aName = (a[`name_${locale}` as keyof typeof a] as string) ?? a.name_de;
                     const checked = active.includes(a.id);
                     return (
-                      <button
+                      <motion.button
                         key={a.id}
                         onClick={() => toggle(a.id)}
-                        className={`flex items-center gap-2.5 p-3 rounded-2xl border-2 text-left transition-all duration-150 active:scale-95 min-h-[58px] ${
+                        variants={{
+                          hidden: { opacity: 0, y: 8 },
+                          visible: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] } },
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`flex items-center gap-2.5 p-3 rounded-2xl border-2 text-left transition-all duration-150 min-h-[58px] ${
                           checked
                             ? "border-pine bg-pine/10 dark:bg-pine/20"
                             : "border-zinc-200/80 dark:border-zinc-700/60 hover:border-gold/40 hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
@@ -153,22 +163,30 @@ export function AllergenFilter({
                           <p className="text-[11px] text-muted-light dark:text-muted-dark leading-tight truncate">{aName}</p>
                         </div>
                         {checked && (
-                          <Check size={13} className="text-pine dark:text-pine-light shrink-0" strokeWidth={3} />
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                          >
+                            <Check size={13} className="text-pine dark:text-pine-light shrink-0" strokeWidth={3} />
+                          </motion.div>
                         )}
-                      </button>
+                      </motion.button>
                     );
                   })}
-                </div>
+                </motion.div>
               </div>
 
               {/* CTA */}
               <div className="px-5 pb-5 pt-3 border-t border-zinc-100 dark:border-zinc-800/60 shrink-0">
-                <button
+                <motion.button
                   onClick={() => setOpen(false)}
-                  className="w-full bg-gold text-white font-bold py-3.5 rounded-2xl text-[15px] active:scale-[0.98] transition-transform shadow-lg shadow-gold/20"
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="w-full bg-gold text-white font-bold py-3.5 rounded-2xl text-[15px] shadow-lg shadow-gold/20"
                 >
                   {hasActive ? `${active.length} × ${t("done")}` : t("done")}
-                </button>
+                </motion.button>
               </div>
             </motion.div>
           </>

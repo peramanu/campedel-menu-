@@ -85,10 +85,10 @@ export function ItemDetailModal({
           {/* Sheet — slides up from bottom */}
           <motion.div
             key="sheet"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 30, stiffness: 320 }}
+            initial={{ y: "100%", scale: 0.98 }}
+            animate={{ y: 0, scale: 1 }}
+            exit={{ y: "100%", scale: 0.98 }}
+            transition={{ type: "spring", damping: 32, stiffness: 340, mass: 0.85 }}
             className="fixed bottom-0 inset-x-0 z-50 max-h-[92dvh] flex flex-col sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:max-h-[85dvh] sm:w-full sm:max-w-md sm:rounded-3xl overflow-hidden bg-surface-light dark:bg-surface-dark shadow-2xl"
           >
             {/* Drag handle (mobile) */}
@@ -96,8 +96,14 @@ export function ItemDetailModal({
               <div className="w-9 h-1 rounded-full bg-zinc-300 dark:bg-zinc-600" />
             </div>
 
-            {/* Hero image / gradient */}
-            <div className="relative w-full shrink-0" style={{ paddingTop: isWine ? "65%" : "52%" }}>
+            {/* Hero image / gradient — scales in */}
+            <motion.div
+              initial={{ scale: 1.06, opacity: 0.7 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="relative w-full shrink-0"
+              style={{ paddingTop: isWine ? "65%" : "52%" }}
+            >
               {/* Gradient always visible as background */}
               <div className="absolute inset-0 dark:hidden" style={{ background: `linear-gradient(135deg, ${cfg.lFrom}, ${cfg.lTo})` }} />
               <div className="absolute inset-0 hidden dark:block" style={{ background: `linear-gradient(135deg, ${cfg.dFrom}, ${cfg.dTo})` }} />
@@ -122,12 +128,17 @@ export function ItemDetailModal({
               )}
 
               {/* Close button */}
-              <button
+              <motion.button
                 onClick={onClose}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.15, type: "spring", stiffness: 400, damping: 25 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm text-white flex items-center justify-center hover:bg-black/50 transition-colors"
               >
                 <X size={15} />
-              </button>
+              </motion.button>
 
               {/* Badges overlay */}
               <div className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
@@ -150,14 +161,22 @@ export function ItemDetailModal({
                   </span>
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto overscroll-contain">
-              <div className="px-5 pt-4 pb-8 space-y-4">
+              <motion.div
+                className="px-5 pt-4 pb-8 space-y-4"
+                initial="hidden"
+                animate="visible"
+                variants={{ visible: { transition: { staggerChildren: 0.07, delayChildren: 0.12 } } }}
+              >
 
                 {/* Name + price */}
-                <div className="flex items-start justify-between gap-3">
+                <motion.div
+                  className="flex items-start justify-between gap-3"
+                  variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { duration: 0.38, ease: [0.25, 0.1, 0.25, 1] } } }}
+                >
                   <div className="flex-1 min-w-0">
                     {isWine && (
                       <div className="flex items-center gap-1.5 mb-1">
@@ -187,18 +206,24 @@ export function ItemDetailModal({
                       <p className="price-text text-[22px]">{formatPrice(displayPrice)}</p>
                     </div>
                   )}
-                </div>
+                </motion.div>
 
                 {/* Description */}
                 {desc && (
-                  <p className="text-[14px] text-zinc-600 dark:text-zinc-400 leading-relaxed italic">
+                  <motion.p
+                    className="text-[14px] text-zinc-600 dark:text-zinc-400 leading-relaxed italic"
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] } } }}
+                  >
                     {desc}
-                  </p>
+                  </motion.p>
                 )}
 
                 {/* Wine: tags */}
                 {isWine && (
-                  <div className="flex flex-wrap gap-1.5">
+                  <motion.div
+                    className="flex flex-wrap gap-1.5"
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }}
+                  >
                     {item.wine_doc && (
                       <span className="bg-pine/10 text-pine dark:text-pine-light text-[12px] font-semibold px-2.5 py-1 rounded-full border border-pine/15">
                         {item.wine_doc}
@@ -209,21 +234,26 @@ export function ItemDetailModal({
                         {g}
                       </span>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Wine: tasting notes */}
                 {isWine && tasting && (
-                  <div className="rounded-2xl p-4 border border-gold/15 dark:border-gold/10"
+                  <motion.div
+                    className="rounded-2xl p-4 border border-gold/15 dark:border-gold/10"
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }}
                     style={{ background: "linear-gradient(145deg, rgba(201,169,110,0.05), rgba(201,169,110,0.02))" }}>
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold mb-2.5">{t("tasting")}</p>
                     <p className="text-[13px] italic font-heading text-zinc-600 dark:text-zinc-400 leading-relaxed">{tasting}</p>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Wine: price grid */}
                 {isWine && (
-                  <div className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80">
+                  <motion.div
+                    className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-2xl p-4 border border-zinc-100 dark:border-zinc-800/80"
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }}
+                  >
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-3">{t("prices")}</p>
                     {!hasPriceGrid ? (
                       <div className="flex justify-between items-center">
@@ -239,12 +269,14 @@ export function ItemDetailModal({
                         {item.price         != null && <WinePriceRow label={t("priceBottle")}  price={item.price} accent />}
                       </div>
                     )}
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Allergens */}
                 {item.allergens.length > 0 && (
-                  <div>
+                  <motion.div
+                    variants={{ hidden: { opacity: 0, y: 10 }, visible: { opacity: 1, y: 0, transition: { duration: 0.35 } } }}
+                  >
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-light dark:text-muted-dark mb-2.5">{t("allergens")}</p>
                     <div className="flex flex-wrap gap-2">
                       {item.allergens.map((a) => {
@@ -260,14 +292,17 @@ export function ItemDetailModal({
                         );
                       })}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* Legal note */}
-                <p className="text-[10px] text-muted-light dark:text-muted-dark">
+                <motion.p
+                  className="text-[10px] text-muted-light dark:text-muted-dark"
+                  variants={{ hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.35 } } }}
+                >
                   {t("allergenLegal")}
-                </p>
-              </div>
+                </motion.p>
+              </motion.div>
             </div>
           </motion.div>
         </>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Leaf, Sprout } from "lucide-react";
 import { AllergenBadge } from "./AllergenBadge";
+import { BorderBeam } from "@/components/ui/BorderBeam";
 import { formatPrice, getLocalizedField } from "@/lib/utils";
 import type { MenuItemWithAllergens, Locale } from "@/types";
 
@@ -62,7 +63,9 @@ export function MenuCard({
   /* ── Compact 2-col tile ─────────────────────────────────── */
   if (compact) {
     return (
-      <div className="card-surface rounded-2xl overflow-hidden h-full flex flex-col">
+      <div className="card-surface card-shimmer rounded-2xl overflow-hidden h-full flex flex-col">
+        {/* Rotating border on special items */}
+        {item.is_daily_special && <BorderBeam duration={4} />}
         {/* Image / gradient */}
         <div className="relative w-full flex-shrink-0" style={{ paddingTop: "72%" }}>
           {item.image_url ? (

@@ -109,17 +109,19 @@ input, textarea, select { font-size: max(16px, 1rem); }
     box-shadow:
       0 2px 8px rgba(0,0,0,0.07),
       0 12px 36px rgba(0,0,0,0.1),
-      0 0 0 1px rgba(201,169,110,0.2) inset;
-    border-color: rgba(201,169,110,0.28);
-    transform: translateY(-2px);
+      0 0 0 1px rgba(201,169,110,0.25) inset,
+      0 0 28px rgba(201,169,110,0.07);
+    border-color: rgba(201,169,110,0.38);
+    transform: translateY(-3px);
   }
   .dark .card-surface:hover {
     box-shadow:
       0 2px 8px rgba(0,0,0,0.45),
       0 12px 36px rgba(0,0,0,0.5),
-      0 0 0 1px rgba(201,169,110,0.15) inset;
-    border-color: rgba(201,169,110,0.22);
-    transform: translateY(-2px);
+      0 0 0 1px rgba(201,169,110,0.2) inset,
+      0 0 32px rgba(201,169,110,0.05);
+    border-color: rgba(201,169,110,0.28);
+    transform: translateY(-3px);
   }
 }
 
@@ -249,4 +251,98 @@ input, textarea, select { font-size: max(16px, 1rem); }
 @media (min-width: 400px) {
   .xs\:block  { display: block; }
   .xs\:hidden { display: none;  }
+}
+
+/* ── Design tokens for BorderBeam ───────────────────────────── */
+:root { --surface: #FFFEFB; }
+.dark { --surface: #222220; }
+
+/* ── Shimmer gradient text ──────────────────────────────────── */
+@keyframes shimmer-x {
+  from { background-position: -200% center; }
+  to   { background-position:  200% center; }
+}
+.shimmer-gold {
+  background: linear-gradient(
+    90deg,
+    #9A7840 0%, #C9A96E 22%, #EDD085 45%, #C9A96E 68%, #9A7840 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-x 6s ease-in-out infinite;
+}
+/* Lighter variant — for smaller text already gold-colored */
+.shimmer-gold-soft {
+  background: linear-gradient(
+    90deg,
+    #A8854A 0%, #DFC08A 30%, #F2D9A2 50%, #DFC08A 70%, #A8854A 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-x 5s ease-in-out infinite;
+}
+
+/* ── Logo orbit rings ───────────────────────────────────────── */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes spin-slow-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+/* ── Logo glow breathe ──────────────────────────────────────── */
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.85; }
+}
+
+/* ── Border beam (CSS @property needed for smooth rotation) ── */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes border-beam {
+  from { --beam-angle: 0deg; }
+  to   { --beam-angle: 360deg; }
+}
+
+/* ── Card shimmer sweep on hover ────────────────────────────── */
+@keyframes shimmer-sweep {
+  from { transform: translateX(-120%) skewX(-15deg); }
+  to   { transform: translateX(220%)  skewX(-15deg); }
+}
+.card-shimmer {
+  position: relative;
+}
+.card-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201,169,110,0.09) 50%,
+    transparent 100%
+  );
+  transform: translateX(-120%) skewX(-15deg);
+  pointer-events: none;
+  z-index: 5;
+}
+@media (hover: hover) {
+  .card-shimmer:hover::after {
+    animation: shimmer-sweep 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+/* ── Stagger fade-up for list items ─────────────────────────── */
+@keyframes fade-up-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
