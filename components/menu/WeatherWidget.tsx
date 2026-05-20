@@ -25,7 +25,7 @@ export function WeatherWidget() {
   useEffect(() => {
     fetch(
       "https://api.open-meteo.com/v1/forecast" +
-      "?latitude=46.55&longitude=11.62" +
+      "?latitude=46.538&longitude=11.558" +
       "&current=temperature_2m,weather_code" +
       "&timezone=Europe%2FRome"
     )
@@ -48,7 +48,7 @@ export function WeatherWidget() {
       <span className="text-base leading-none">{emoji(wx.code)}</span>
       <span className="font-semibold text-zinc-700 dark:text-zinc-300">{wx.temp}°</span>
       <span className="text-zinc-400 dark:text-zinc-600">·</span>
-      <span className="tracking-wide">Seiser Alm · 1.844 m</span>
+      <span className="tracking-wide">Seis am Schlern</span>
     </div>
   );
 }
