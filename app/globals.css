@@ -156,6 +156,39 @@ input, textarea, select { font-size: max(16px, 1rem); }
   pointer-events: none;
 }
 
+/* ── Theme switch: circular wipe (View Transitions API) ─────── */
+@keyframes vt-circle-expand {
+  from { clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to   { clip-path: circle(200vmax at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+@keyframes vt-circle-contract {
+  from { clip-path: circle(200vmax at var(--vt-x, 50%) var(--vt-y, 50%)); }
+  to   { clip-path: circle(0px at var(--vt-x, 50%) var(--vt-y, 50%)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    mix-blend-mode: normal;
+  }
+
+  /* Going dark → dark layer expands like ink from the button */
+  html[data-vt="dark"]::view-transition-new(root) {
+    animation: vt-circle-expand 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  html[data-vt="dark"]::view-transition-old(root) {
+    animation: none;
+  }
+
+  /* Going light → dark veil retreats back into the button */
+  html[data-vt="light"]::view-transition-old(root) {
+    animation: vt-circle-contract 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  html[data-vt="light"]::view-transition-new(root) {
+    animation: none;
+  }
+}
+
 /* ── Touch active ───────────────────────────────────────────── */
 @media (max-width: 640px) {
   button { -webkit-tap-highlight-color: transparent; }

@@ -57,10 +57,16 @@ export function MenuHeader({ locale }: { locale: string }) {
           <div className="flex items-center gap-2 shrink-0">
             {/* Theme toggle — single cycling button */}
             <button
-              onClick={() => setTheme(next)}
+              onClick={(e) => {
+                const r = e.currentTarget.getBoundingClientRect();
+                setTheme(next, {
+                  x: Math.round(r.left + r.width / 2),
+                  y: Math.round(r.top + r.height / 2),
+                });
+              }}
               aria-label={`Anzeigemodus: ${LABELS[theme] ?? "System"} → ${LABELS[next]}`}
               title={`${LABELS[theme] ?? "System"} (klicken für ${LABELS[next]})`}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 transition-all duration-200"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 transition-all duration-200 active:scale-90"
             >
               <Icon size={15} strokeWidth={1.8} />
             </button>

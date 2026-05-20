@@ -2,10 +2,11 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark" | "system";
+type ClickPos = { x: number; y: number };
 
 const ThemeContext = createContext<{
   theme: Theme;
-  setTheme: (t: Theme) => void;
+  setTheme: (t: Theme, clickPos?: ClickPos) => void;
 }>({ theme: "system", setTheme: () => {} });
 
 function applyTheme(t: Theme) {
@@ -22,14 +23,12 @@ function applyTheme(t: Theme) {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>("system");
 
-  // Read stored theme once on mount
   useEffect(() => {
     const stored = (localStorage.getItem("theme") as Theme | null) ?? "system";
     setThemeState(stored);
     applyTheme(stored);
   }, []);
 
-  // Keep system preference in sync when in system mode
   useEffect(() => {
     if (theme !== "system") return;
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -39,10 +38,39 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     return () => mq.removeEventListener("change", handler);
   }, [theme]);
 
-  function setTheme(t: Theme) {
-    setThemeState(t);
-    localStorage.setItem("theme", t);
-    applyTheme(t); // apply immediately — no waiting for next render
+  function setTheme(t: Theme, clickPos?: ClickPos) {
+    const doApply = () => {
+      setThemeState(t);
+      localStorage.setItem("theme", t);
+      applyTheme(t);
+    };
+
+    const supportsVT =
+      typeof document !== "undefined" && "startViewTransition" in document;
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!supportsVT || !clickPos || reducedMotion) {
+      doApply();
+      return;
+    }
+
+    const goingDark =
+      t === "dark" ||
+      (t === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
+    const root = document.documentElement;
+    root.style.setProperty("--vt-x", `${clickPos.x}px`);
+    root.style.setProperty("--vt-y", `${clickPos.y}px`);
+    root.dataset.vt = goingDark ? "dark" : "light";
+
+    const vt = (document as Document & { startViewTransition: (cb: () => void) => { finished: Promise<void> } })
+      .startViewTransition(doApply);
+
+    vt.finished.then(() => {
+      delete root.dataset.vt;
+    });
   }
 
   return (
