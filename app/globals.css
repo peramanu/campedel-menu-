@@ -171,14 +171,18 @@ input, textarea, select { font-size: max(16px, 1rem); }
   .photo-strip-track { animation: none; }
 }
 
-/* ── Print: only the QR card ────────────────────────────────── */
+/* ── Print: only the QR card (fallback — primary path opens a new window) ── */
 @media print {
-  body > *        { display: none !important; }
-  #qr-print-card  { display: flex !important; position: fixed !important;
-                    inset: 0 !important; margin: auto !important;
-                    width: 320px !important; height: 500px !important;
-                    box-shadow: none !important; border-radius: 24px !important;
-                    overflow: hidden !important; z-index: 9999 !important; }
+  body * { visibility: hidden !important; }
+  #qr-print-card, #qr-print-card * { visibility: visible !important; }
+  #qr-print-card {
+    position: fixed !important;
+    left: 50% !important; top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 320px !important; height: 500px !important;
+    border-radius: 24px !important; overflow: hidden !important;
+    box-shadow: none !important; z-index: 9999 !important;
+  }
 }
 
 /* ── Language pill glass (used by LanguageSwitcher) ─────────── */
