@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   DndContext,
   closestCenter,
@@ -18,7 +17,7 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ToggleLeft, ToggleRight } from "lucide-react";
+import { GripVertical, ToggleLeft, ToggleRight, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import type { Category } from "@/types";
 
@@ -30,33 +29,54 @@ function SortableRow({ cat, onToggle }: { cat: Category; onToggle: () => void })
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors ${isDragging ? "opacity-50 bg-zinc-100 dark:bg-zinc-800 rounded-xl z-50" : ""}`}
+      className={`flex items-center gap-3 px-4 py-3.5 transition-colors ${
+        isDragging
+          ? "opacity-50 bg-gold/5 dark:bg-gold/8 z-50"
+          : "hover:bg-zinc-50/80 dark:hover:bg-zinc-800/30"
+      }`}
     >
+      {/* Drag handle */}
       <button
         {...attributes}
         {...listeners}
-        className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-500 dark:hover:text-zinc-400 cursor-grab active:cursor-grabbing"
+        className="text-zinc-300 dark:text-zinc-600 hover:text-zinc-400 dark:hover:text-zinc-500 cursor-grab active:cursor-grabbing flex-shrink-0 touch-none"
+        tabIndex={-1}
       >
-        <GripVertical size={18} />
+        <GripVertical size={16} strokeWidth={1.8} />
       </button>
-      <span className="text-xl w-7">{cat.icon}</span>
-      <div className="flex-1">
-        <p className="font-medium text-sm text-zinc-900 dark:text-zinc-100">{cat.name_de}</p>
-        <p className="text-xs text-muted-light dark:text-muted-dark">{cat.name_it} · {cat.name_en}</p>
+
+      {/* Icon */}
+      <span className="text-[22px] leading-none w-7 flex-shrink-0">{cat.icon}</span>
+
+      {/* Names */}
+      <div className="flex-1 min-w-0">
+        <p className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100 leading-snug truncate">
+          {cat.name_de}
+        </p>
+        <p className="text-[11.5px] text-muted-light dark:text-muted-dark mt-0.5 truncate">
+          {[cat.name_it, cat.name_en].filter(Boolean).join(" · ")}
+        </p>
       </div>
+
+      {/* Toggle */}
       <button
         onClick={onToggle}
-        className={`transition-colors ${cat.is_active ? "text-green-500 hover:text-red-400" : "text-zinc-400 hover:text-green-500"}`}
         title={cat.is_active ? "Aktiv – klicken zum Deaktivieren" : "Inaktiv – klicken zum Aktivieren"}
+        className={`p-2 rounded-lg transition-colors flex-shrink-0 ${
+          cat.is_active
+            ? "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+            : "text-zinc-400 dark:text-zinc-600 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        }`}
       >
-        {cat.is_active ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+        {cat.is_active
+          ? <ToggleRight size={20} strokeWidth={1.8} />
+          : <ToggleLeft size={20} strokeWidth={1.8} />}
       </button>
     </div>
   );
 }
 
 export function CategoriesClient({ initialCategories }: { initialCategories: Category[] }) {
-  const router = useRouter();
   const [cats, setCats] = useState(initialCategories);
   const [saving, setSaving] = useState(false);
 
@@ -93,19 +113,39 @@ export function CategoriesClient({ initialCategories }: { initialCategories: Cat
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex items-center justify-between">
-        <h1 className="font-heading font-bold text-2xl text-zinc-900 dark:text-zinc-100">Kategorien</h1>
-        {saving && <span className="text-xs text-muted-light dark:text-muted-dark">Speichern...</span>}
-      </div>
-      <p className="text-sm text-muted-light dark:text-muted-dark">
-        Reihenfolge per Drag & Drop ändern · Toggle zum Aktivieren/Deaktivieren
-      </p>
+    <div className="space-y-6">
 
-      <div className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card dark:shadow-card-dark overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-heading font-bold text-[26px] text-zinc-900 dark:text-zinc-100 leading-none mb-1">
+            Kategorien
+          </h1>
+          <p className="text-[13px] text-muted-light dark:text-muted-dark">
+            {cats.length} Kategorien · {cats.filter(c => c.is_active).length} aktiv
+          </p>
+        </div>
+        {saving && (
+          <div className="flex items-center gap-1.5 text-[12px] text-muted-light dark:text-muted-dark">
+            <Loader2 size={13} className="animate-spin text-gold" />
+            Speichern…
+          </div>
+        )}
+      </div>
+
+      {/* Hint */}
+      <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/40">
+        <GripVertical size={13} className="text-zinc-400 flex-shrink-0" strokeWidth={1.8} />
+        <p className="text-[12px] text-muted-light dark:text-muted-dark">
+          Reihenfolge per Drag & Drop anpassen · Toggle zum Aktivieren oder Deaktivieren
+        </p>
+      </div>
+
+      {/* Category list */}
+      <div className="card-surface rounded-2xl overflow-hidden">
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={cats.map((c) => c.id)} strategy={verticalListSortingStrategy}>
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y divide-zinc-100/80 dark:divide-zinc-800/60">
               {cats.map((cat) => (
                 <SortableRow key={cat.id} cat={cat} onToggle={() => toggleActive(cat.id)} />
               ))}
@@ -113,6 +153,7 @@ export function CategoriesClient({ initialCategories }: { initialCategories: Cat
           </SortableContext>
         </DndContext>
       </div>
+
     </div>
   );
 }

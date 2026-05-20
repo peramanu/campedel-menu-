@@ -1,103 +1,131 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import Link from "next/link";
-import { UtensilsCrossed, Star, PlusCircle, Tags } from "lucide-react";
+import { UtensilsCrossed, Star, PlusCircle, Tags, ChevronRight } from "lucide-react";
 
 export default async function DashboardPage() {
   const supabase = await createSupabaseServerClient();
-  const today = new Date().toISOString().split("T")[0];
+  const today    = new Date().toISOString().split("T")[0];
 
   const [{ count: totalItems }, { count: activeSpecials }, { data: recentItems }] =
     await Promise.all([
       supabase.from("menu_items").select("*", { count: "exact", head: true }),
-      supabase
-        .from("daily_specials")
-        .select("*", { count: "exact", head: true })
-        .eq("special_date", today),
-      supabase
-        .from("menu_items")
-        .select("id, name_de, updated_at, is_available")
-        .order("updated_at", { ascending: false })
-        .limit(5),
+      supabase.from("daily_specials").select("*", { count: "exact", head: true }).eq("special_date", today),
+      supabase.from("menu_items").select("id, name_de, updated_at, is_available")
+        .order("updated_at", { ascending: false }).limit(6),
     ]);
 
-  const stats = [
-    { label: "Gerichte gesamt", value: totalItems ?? 0, icon: UtensilsCrossed, color: "text-gold" },
-    { label: "Tagesangebote heute", value: activeSpecials ?? 0, icon: Star, color: "text-pine" },
-  ];
-
-  const quickActions = [
-    { href: "/admin/items?new=1", icon: PlusCircle, label: "Neues Gericht anlegen", color: "bg-gold text-white" },
-    { href: "/admin/categories", icon: Tags, label: "Kategorien verwalten", color: "bg-pine/10 text-pine dark:text-pine-light" },
-  ];
+  const dateLabel = new Date().toLocaleDateString("de-AT", {
+    weekday: "long", year: "numeric", month: "long", day: "numeric",
+  });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+
+      {/* Page header */}
       <div>
-        <h1 className="font-heading font-bold text-2xl text-zinc-900 dark:text-zinc-100">Dashboard</h1>
-        <p className="text-sm text-muted-light dark:text-muted-dark mt-1">
-          {new Date().toLocaleDateString("de-AT", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-        </p>
+        <h1 className="font-heading font-bold text-[26px] text-zinc-900 dark:text-zinc-100 leading-none mb-1">
+          Dashboard
+        </h1>
+        <p className="text-[13px] text-muted-light dark:text-muted-dark capitalize">{dateLabel}</p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
-        {stats.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-surface-light dark:bg-surface-dark rounded-2xl p-5 shadow-card dark:shadow-card-dark">
-            <Icon size={22} className={`${color} mb-3`} />
-            <p className="font-heading font-bold text-3xl text-zinc-900 dark:text-zinc-100">{value}</p>
-            <p className="text-sm text-muted-light dark:text-muted-dark mt-0.5">{label}</p>
+
+        <div className="card-surface rounded-2xl p-5">
+          <div className="flex items-start justify-between mb-4">
+            <div className="w-9 h-9 rounded-xl bg-gold/10 flex items-center justify-center">
+              <UtensilsCrossed size={16} className="text-gold" strokeWidth={1.8} />
+            </div>
           </div>
-        ))}
+          <p className="font-heading font-bold text-[38px] leading-none text-zinc-900 dark:text-zinc-100 mb-1">
+            {totalItems ?? 0}
+          </p>
+          <p className="text-[12px] text-muted-light dark:text-muted-dark font-medium">Gerichte gesamt</p>
+        </div>
+
+        <div className="card-surface rounded-2xl p-5">
+          <div className="flex items-start justify-between mb-4">
+            <div className="w-9 h-9 rounded-xl bg-pine/10 flex items-center justify-center">
+              <Star size={16} className="text-pine dark:text-pine-light" strokeWidth={1.8} />
+            </div>
+          </div>
+          <p className="font-heading font-bold text-[38px] leading-none text-zinc-900 dark:text-zinc-100 mb-1">
+            {activeSpecials ?? 0}
+          </p>
+          <p className="text-[12px] text-muted-light dark:text-muted-dark font-medium">Tagesangebote heute</p>
+        </div>
+
       </div>
 
       {/* Quick actions */}
       <div>
-        <h2 className="font-semibold text-sm text-muted-light dark:text-muted-dark uppercase tracking-wide mb-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-light dark:text-muted-dark mb-3">
           Schnellzugriff
-        </h2>
-        <div className="grid gap-3">
-          {quickActions.map(({ href, icon: Icon, label, color }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl ${color} font-medium transition-opacity hover:opacity-90`}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
-          ))}
+        </p>
+        <div className="grid gap-2.5">
+          <Link
+            href="/admin/items?new=1"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-gold text-white font-semibold text-[14px] hover:bg-gold-dark transition-colors shadow-md shadow-gold/20 group"
+          >
+            <PlusCircle size={17} strokeWidth={2} />
+            <span>Neues Gericht anlegen</span>
+            <ChevronRight size={15} className="ml-auto opacity-70 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
+          <Link
+            href="/admin/categories"
+            className="flex items-center gap-3 px-4 py-3.5 rounded-xl bg-pine/10 dark:bg-pine/15 text-pine dark:text-pine-light font-semibold text-[14px] hover:bg-pine/15 dark:hover:bg-pine/20 transition-colors group border border-pine/15 dark:border-pine/20"
+          >
+            <Tags size={17} strokeWidth={1.8} />
+            <span>Kategorien verwalten</span>
+            <ChevronRight size={15} className="ml-auto opacity-60 group-hover:translate-x-0.5 transition-transform" />
+          </Link>
         </div>
       </div>
 
       {/* Recent changes */}
       <div>
-        <h2 className="font-semibold text-sm text-muted-light dark:text-muted-dark uppercase tracking-wide mb-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-muted-light dark:text-muted-dark mb-3">
           Zuletzt geändert
-        </h2>
-        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl shadow-card dark:shadow-card-dark divide-y divide-zinc-100 dark:divide-zinc-800">
-          {(recentItems ?? []).map((item: any) => (
-            <Link
-              key={item.id}
-              href={`/admin/items?edit=${item.id}`}
-              className="flex items-center justify-between px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors first:rounded-t-2xl last:rounded-b-2xl"
-            >
-              <div>
-                <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">{item.name_de}</p>
-                <p className="text-xs text-muted-light dark:text-muted-dark">
-                  {new Date(item.updated_at).toLocaleDateString("de-AT")}
-                </p>
-              </div>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                item.is_available
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                  : "bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400"
-              }`}>
-                {item.is_available ? "Aktiv" : "Inaktiv"}
-              </span>
-            </Link>
-          ))}
+        </p>
+        <div className="card-surface rounded-2xl overflow-hidden">
+          {(recentItems ?? []).length === 0 ? (
+            <p className="text-center py-10 text-[13px] text-muted-light dark:text-muted-dark italic font-heading">
+              Noch keine Einträge
+            </p>
+          ) : (
+            <div className="divide-y divide-zinc-100 dark:divide-zinc-800/80">
+              {(recentItems ?? []).map((item: any) => (
+                <Link
+                  key={item.id}
+                  href={`/admin/items?edit=${item.id}`}
+                  className="flex items-center justify-between px-4 py-3.5 hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors group"
+                >
+                  <div className="min-w-0">
+                    <p className="text-[14px] font-medium text-zinc-900 dark:text-zinc-100 truncate group-hover:text-gold-dark dark:group-hover:text-gold transition-colors">
+                      {item.name_de}
+                    </p>
+                    <p className="text-[11.5px] text-muted-light dark:text-muted-dark mt-0.5">
+                      {new Date(item.updated_at).toLocaleDateString("de-AT", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5 shrink-0 ml-3">
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${
+                      item.is_available
+                        ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40"
+                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/40"
+                    }`}>
+                      {item.is_available ? "Aktiv" : "Inaktiv"}
+                    </span>
+                    <ChevronRight size={13} className="text-zinc-300 dark:text-zinc-600 group-hover:text-gold transition-colors" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
     </div>
   );
 }
