@@ -83,86 +83,11 @@ UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/14093961/pex
 UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/17628620/pexels-photo-17628620.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop'
   WHERE name_de = 'Crème brûlée mit frischen Erdbeeren';
 
--- ── Schaumwein ───────────────────────────────────────────────
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/5157388/pexels-photo-5157388.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Arunda Brut';
+-- ── Schaumwein ── (wine images managed via admin upload, not overwritten here)
 
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/3642295/pexels-photo-3642295.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Zemmer Millesimato';
+-- ── Weißwein ── (wine images managed via admin upload, not overwritten here)
 
--- ── Weißwein ─────────────────────────────────────────────────
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/774455/pexels-photo-774455.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Michelstrunk Weiss';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/36560883/pexels-photo-36560883.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'T Cuvée Weiss';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/2909085/pexels-photo-2909085.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Gewürztraminer';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/5004027/pexels-photo-5004027.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Schulthaus Weissburgunder Pinot Bianco';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/33993981/pexels-photo-33993981.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Sylvaner';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/13257037/pexels-photo-13257037.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Kerner';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/295267/pexels-photo-295267.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Sauvignon';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/28989792/pexels-photo-28989792.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Sanct Valentin Sauvignon';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/774455/pexels-photo-774455.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Riesling';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/36560883/pexels-photo-36560883.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Fellis Chardonnay Riserva';
-
--- ── Rotwein ──────────────────────────────────────────────────
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/2909085/pexels-photo-2909085.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Michelstrunk Rot';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/5004027/pexels-photo-5004027.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Zeder';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/33993981/pexels-photo-33993981.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Soma';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/13257037/pexels-photo-13257037.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Cabernet Riserva';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/295267/pexels-photo-295267.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'St. Magdalener';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/28989792/pexels-photo-28989792.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Roan Zweigelt';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/774455/pexels-photo-774455.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Pinot Noir';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/36560883/pexels-photo-36560883.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Marith Blauburgunder';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/2909085/pexels-photo-2909085.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Glen Blauburgunder Riserva';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/5004027/pexels-photo-5004027.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Lagrein';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/33993981/pexels-photo-33993981.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Karl Lagrein Riserva';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/13257037/pexels-photo-13257037.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Huberfeld Merlot';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/295267/pexels-photo-295267.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Terre di San Leonardo';
-
-UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/28989792/pexels-photo-28989792.jpeg?auto=compress&cs=tinysrgb&w=600&h=900&fit=crop'
-  WHERE name_de = 'Amarone della Valpolicella DOCG';
+-- ── Rotwein ── (wine images managed via admin upload, not overwritten here)
 
 -- ── Warme Getränke ───────────────────────────────────────────
 UPDATE menu_items SET image_url = 'https://images.pexels.com/photos/11160148/pexels-photo-11160148.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop'
