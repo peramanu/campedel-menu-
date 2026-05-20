@@ -87,30 +87,28 @@ export function MenuCard({
         </div>
 
         {/* Text */}
-        <div className="px-2.5 pt-2 pb-2.5 flex flex-col flex-1">
-          <div className="flex items-start justify-between gap-1 mb-1">
-            <h3 className="font-heading font-bold text-[13px] leading-snug text-zinc-900 dark:text-zinc-100 flex-1 min-w-0 line-clamp-2">
-              {name}
-            </h3>
-          </div>
+        <div className="px-3 pt-2.5 pb-3 flex flex-col flex-1">
+          <h3 className="font-heading font-bold text-[13px] leading-snug text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-1">
+            {name}
+          </h3>
           {desc && (
-            <p className="text-[11px] italic text-muted-light dark:text-muted-dark leading-relaxed line-clamp-2 mb-1">
+            <p className="text-[11px] italic text-muted-light dark:text-muted-dark leading-relaxed line-clamp-2 mb-1.5">
               {desc}
             </p>
           )}
-          <div className="mt-auto pt-1 flex items-end justify-between gap-1">
+          <div className="mt-auto flex items-end justify-between gap-1">
             <div className="flex flex-wrap gap-0.5">
               {item.allergens.slice(0, 4).map((a) => (
                 <span
                   key={a.id}
                   title={a.name_de}
-                  className="text-[10px] font-bold text-muted-light dark:text-muted-dark bg-zinc-100 dark:bg-zinc-800 rounded px-1"
+                  className="text-[9px] font-bold text-zinc-500 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-700/60 rounded px-1 py-px"
                 >
                   {a.code}
                 </span>
               ))}
               {item.allergens.length > 4 && (
-                <span className="text-[10px] text-muted-light dark:text-muted-dark">+{item.allergens.length - 4}</span>
+                <span className="text-[9px] text-muted-light dark:text-muted-dark">+{item.allergens.length - 4}</span>
               )}
             </div>
             <div className="shrink-0 text-right">

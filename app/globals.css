@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Override Tailwind v4's default media-query dark variant with class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --font-heading: var(--font-playfair);
   --font-body:    var(--font-inter);
@@ -53,23 +56,27 @@ input, textarea, select { font-size: max(16px, 1rem); }
 .pt-safe  { padding-top:    env(safe-area-inset-top); }
 .pb-safe  { padding-bottom: env(safe-area-inset-bottom); }
 
-/* ── Section scroll target (header 56px + tabs 48px + gap 8) */
-.menu-section { scroll-margin-top: 118px; }
+/* ── Section scroll target (header 65px + tabs 52px + gap 8) */
+.menu-section { scroll-margin-top: 130px; }
 
 /* ── Hero gradient (warm gold glow from top) ───────────────── */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 110% 70% at 50% -5%,
-      rgba(201,169,110,0.13) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 90% 110%,
-      rgba(45,80,22,0.06) 0%, transparent 55%);
+    radial-gradient(ellipse 120% 80% at 50% -10%,
+      rgba(201,169,110,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 105%,
+      rgba(45,80,22,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 90%,
+      rgba(201,169,110,0.05) 0%, transparent 50%);
 }
 .dark .hero-gradient {
   background:
-    radial-gradient(ellipse 110% 70% at 50% -5%,
-      rgba(201,169,110,0.09) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 90% 110%,
-      rgba(45,80,22,0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 120% 80% at 50% -10%,
+      rgba(201,169,110,0.11) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 105%,
+      rgba(45,80,22,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 10% 90%,
+      rgba(201,169,110,0.04) 0%, transparent 50%);
 }
 
 /* ── Diamond tile pattern (from the logo's geometric motif) ── */
@@ -82,28 +89,40 @@ input, textarea, select { font-size: max(16px, 1rem); }
 /* ── Card surface ──────────────────────────────────────────── */
 .card-surface {
   background: #FFFFFF;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 3px 16px rgba(0,0,0,0.07);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 }
 .dark .card-surface {
   background: #242420;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.25), 0 3px 16px rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 4px 20px rgba(0,0,0,0.35);
 }
 /* Hover lift — only for non-touch devices */
 @media (hover: hover) {
   .card-surface:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.07), 0 8px 24px rgba(0,0,0,0.11);
-    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08), 0 12px 32px rgba(0,0,0,0.1);
+    border-color: rgba(201,169,110,0.25);
+    transform: translateY(-2px);
   }
   .dark .card-surface:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.4);
-    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.45);
+    border-color: rgba(201,169,110,0.2);
+    transform: translateY(-2px);
   }
 }
 
 /* ── Gold price colour ─────────────────────────────────────── */
-.price-text { color: #A8854A; font-weight: 700; }
+.price-text { color: #A8854A; font-weight: 700; letter-spacing: -0.01em; }
 .dark .price-text { color: #DFC08A; }
+
+/* ── Section divider line ──────────────────────────────────── */
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(201,169,110,0.35), transparent);
+  margin-left: 8px;
+}
 
 /* ── Touch-friendly active states ─────────────────────────── */
 @media (max-width: 640px) {

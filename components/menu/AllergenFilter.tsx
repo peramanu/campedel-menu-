@@ -48,14 +48,14 @@ export function AllergenFilter({
       {/* FAB — sits above bottom safe area */}
       <button
         onClick={() => setOpen(true)}
-        className="fixed right-4 z-40 flex items-center gap-2 bg-pine text-white px-4 py-3 rounded-full shadow-lg font-semibold text-sm hover:bg-pine-dark active:scale-95 transition-all"
-        style={{ bottom: "calc(env(safe-area-inset-bottom) + 16px)" }}
+        className="fixed right-4 z-40 flex items-center gap-2 bg-pine dark:bg-pine-light text-white px-4 py-3 rounded-full shadow-xl shadow-pine/20 font-semibold text-sm hover:bg-pine-dark dark:hover:bg-pine active:scale-95 transition-all duration-200"
+        style={{ bottom: "calc(env(safe-area-inset-bottom) + 20px)" }}
         aria-label="Allergene filtern"
       >
-        <SlidersHorizontal size={15} strokeWidth={2.5} />
-        <span>Filter</span>
+        <SlidersHorizontal size={14} strokeWidth={2.5} />
+        <span className="text-[13px]">Filter</span>
         {label && (
-          <span className="bg-gold text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
+          <span className="bg-gold text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center leading-none">
             {label}
           </span>
         )}

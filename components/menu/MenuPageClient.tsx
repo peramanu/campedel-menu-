@@ -146,7 +146,7 @@ export function MenuPageClient({
       {/* Sticky category tabs */}
       <div
         ref={tabsRef}
-        className="sticky top-14 z-30 bg-bg-light/95 dark:bg-bg-dark/95 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
+        className="sticky top-[65px] z-30 bg-bg-light/95 dark:bg-bg-dark/95 backdrop-blur-xl border-b border-zinc-200/50 dark:border-zinc-800/50"
       >
         <CategoryTabs
           categories={activeCats}
@@ -171,12 +171,12 @@ export function MenuPageClient({
               className="menu-section pt-8 sm:pt-10"
             >
               {/* Section heading */}
-              <div className="flex items-center gap-2.5 mb-4">
-                <span className="text-xl leading-none">{cat.icon}</span>
-                <h2 className="font-heading font-bold text-xl sm:text-[22px] text-zinc-900 dark:text-zinc-100 leading-tight">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-2xl leading-none">{cat.icon}</span>
+                <h2 className="font-heading font-bold text-[21px] sm:text-[23px] text-zinc-900 dark:text-zinc-100 leading-tight tracking-tight">
                   {name}
                 </h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-zinc-200/80 dark:from-zinc-700/60 to-transparent ml-1" />
+                <div className="section-rule" />
               </div>
 
               {catItems.length === 0 ? (
@@ -184,7 +184,7 @@ export function MenuPageClient({
                   Derzeit nicht verfügbar
                 </p>
               ) : (
-                <div className="grid grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-2 gap-3">
                   {catItems.map((item, i) => {
                     const special = specialMap.get(item.id);
                     return (
